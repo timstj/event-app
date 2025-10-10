@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Events</title>
+    <link rel="stylesheet" href="./styles/main.css" />
+  </head>
+  <body>
+    <div class="top-banner">
+      <button
+        class="nav-btn"
+        id="create-event-button"
+        data-url="create_event.html"
+      >
+        &#43; Create Event
+      </button>
+      <button class="nav-btn" id="my-events-button" data-url="my_events.html">
+        My Events
+      </button>
+      <button
+        class="nav-btn"
+        id="events-nearby-button"
+        data-url="events_nearby.html"
+      >
+        Events Nearby
+      </button>
+      <h1 id="site-title">Event site</h1>
+      <input type="text" id="search-bar" placeholder="Search events..." />
+      <button
+        class="nav-btn"
+        id="notification-button"
+        data-url="notifications.html"
+      >
+        Notifications
+      </button>
+      <button
+        class="nav-btn"
+        id="profile-button"
+        data-url="profile.html"
+      ></button>
+    </div>
+
+    <div class="my-events-section">
+      <!-- Hosted Events Section (initially hidden) -->
+      <div id="hosted-events-section" style="display: none">
+        <h2>Events I'm Hosting</h2>
+        <div id="hosted-events-list"></div>
+      </div>
+
+      <!-- All Events Section -->
+      <h2>All Events</h2>
+      <div id="events-list"></div>
+    </div>
+    <script src="scripts/main.js"></script>
+  </body>
+</html>

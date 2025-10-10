@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile</title>
+    <link rel="stylesheet" href="./styles/main.css" />
+  </head>
+
+  <body>
+    <div class="top-banner">
+      <button
+        class="nav-btn"
+        id="create-event-button"
+        data-url="create_event.html"
+      >
+        &#43; Create Event
+      </button>
+      <button class="nav-btn" id="my-events-button" data-url="my_events.html">
+        My Events
+      </button>
+      <button
+        class="nav-btn"
+        id="events-nearby-button"
+        data-url="events_nearby.html"
+      >
+        Events Nearby
+      </button>
+      <h1 id="site-title">Event site</h1>
+      <input type="text" id="search-bar" placeholder="Search events..." />
+      <button
+        class="nav-btn"
+        id="notification-button"
+        data-url="notifications.html"
+      >
+        Notifications
+      </button>
+      <button
+        class="nav-btn"
+        id="profile-button"
+        data-url="profile.html"
+      ></button>
+    </div>
+
+    <div class="profile-container">
+      <div class="profile-header">
+        <!-- Dynamically insert user info -->
+        <div class="profile-buttons">
+          <button id="edit-profile-button">Edit Profile</button>
+          <button class="nav-btn" id="settings-button" data-url="settings.html">
+            Settings
+          </button>
+          <button id="sign-out-button" data-url="sign_in.html">Sign Out</button>
+        </div>
+      </div>
+      <div class="activity-feed-section">
+        <h3>Activity Feed</h3>
+        <div id="activity-feed">
+          <!-- Activity feed items will be dynamically inserted here -->
+        </div>
+      </div>
+    </div>
+
+    <script src="scripts/main.js"></script>
+  </body>
+</html>
