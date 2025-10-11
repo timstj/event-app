@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import pool from "./config/db.js"; // Database connection
 
 import userRoutes from "./routes/userRoutes.js"; // User routes
 import eventRoutes from "./routes/eventRoutes.js"; // Event routes
@@ -9,6 +8,7 @@ import authRoutes from "./routes/authRoutes.js"; // Auth routes
 import errorHandling from "./middlewares/errorHandler.js"; // Centralized error handling
 import createUserTable from "./data/createUserTable.js";
 import createEventTables from "./data/createEventTable.js";
+import createFriendsTable from "./data/createFriendsTable.js";
 
 // TODO: Create table for events
 // import createEventTable from './data/createEventTable.js';
@@ -41,6 +41,9 @@ createUserTable();
 
 // Create event tables
 createEventTables();
+
+// Create friends table
+createFriendsTable();
 
 // Server running
 app.listen(PORT, () => {

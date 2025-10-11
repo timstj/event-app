@@ -18,6 +18,7 @@ function authFetch(url, options = {}) {
 
 //-----------------------------------------------------------------------------
 // To ensure user is signed in. Else redirect to sign in page.
+// TODO: Check if token is valid and not just if there is a token
 //-----------------------------------------------------------------------------
 if (
   !window.location.pathname.endsWith("sign_in.html") &&
@@ -378,10 +379,12 @@ if (window.location.pathname.endsWith("profile.html")) {
 
     const profileHeader = document.querySelector(".profile-header");
     if (profileHeader) {
-      //profileHeader.innerHTML = "";
       const nameElement = document.createElement("h2");
       nameElement.textContent = `${user.first_name} ${user.last_name}`;
       profileHeader.prepend(nameElement);
+      // const emailElement = document.createElement("p");
+      // emailElement.textContent = `${user.email}`;
+      // profileHeader.insertBefore(emailElement, nameElement.nextSibling);
     }
     // Show/hide edit options
     const settingsButton = document.getElementById("settings-button");
