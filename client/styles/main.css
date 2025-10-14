@@ -54,9 +54,10 @@ body {
   cursor: pointer; /* Change cursor to pointer on hover */
 }
 
-#events-nearby-button {
+#users-button {
   margin-left: 20px;
   padding: 10px 20px;
+  min-width: 100px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
