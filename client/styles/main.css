@@ -54,6 +54,31 @@ body {
   cursor: pointer; /* Change cursor to pointer on hover */
 }
 
+/* Styling for users.html */
+
+.user-page-content {
+  text-align: center;
+}
+
+#user-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-card {
+  background: #fff;
+  border: 2px solid #4f8a8b;
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  min-width: 250px;
+  max-width: 250px;
+  text-align: center;
+}
+
 #users-button {
   margin-left: 20px;
   padding: 10px 20px;

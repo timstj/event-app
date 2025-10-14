@@ -2,7 +2,39 @@
 
 const API_BASE_URL = "http://localhost:5001/api";
 
+let allUsers = [];
+
 //-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// Toast notification system
+//-----------------------------------------------------------------------------
+function showToast(message, type = "info") {
+  let toast = document.getElementById("custom-toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "custom-toast";
+    toast.style.position = "fixed";
+    toast.style.bottom = "30px";
+    toast.style.left = "50%";
+    toast.style.transform = "translateX(-50%)";
+    toast.style.background = "#333";
+    toast.style.color = "#fff";
+    toast.style.padding = "16px 32px";
+    toast.style.borderRadius = "8px";
+    toast.style.fontSize = "16px";
+    toast.style.zIndex = "9999";
+    toast.style.opacity = "0";
+    toast.style.transition = "opacity 0.3s";
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.style.background = type === "error" ? "#d32f2f" : "#333";
+  toast.style.opacity = "1";
+  setTimeout(() => {
+    toast.style.opacity = "0";
+  }, 2500);
+}
 // Helper function for token validation for backend.
 //-----------------------------------------------------------------------------
 function authFetch(url, options = {}) {
@@ -73,14 +105,16 @@ if (signUpForm) {
       });
       const result = await response.json();
       if (response.ok) {
-        alert("User registered successfully!");
-        window.location.href = "sign_in.html";
+        showToast("User registered successfully!");
+        setTimeout(() => {
+          window.location.href = "sign_in.html";
+        }, 1200);
       } else {
-        alert(`Error: ${result.message}`);
+        showToast(`Error: ${result.message}`, "error");
       }
     } catch (error) {
       console.error("Error creating user:", error);
-      alert("An error occurred while registering the user.");
+      showToast("An error occurred while registering the user.", "error");
     }
   });
 }
@@ -120,14 +154,16 @@ if (createEventForm) {
       });
       const result = await response.json();
       if (response.ok) {
-        alert("Event created successfully!");
-        window.location.href = "index.html";
+        showToast("Event created successfully!");
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1200);
       } else {
-        alert(`Error: ${result.message}`);
+        showToast(`Error: ${result.message}`, "error");
       }
     } catch (error) {
       console.error("Error creating event:", error);
-      alert("An error occurred while creating the event.");
+      showToast("An error occurred while creating the event.", "error");
     }
   });
 }
@@ -165,11 +201,11 @@ if (signInForm) {
         // Redirect to the homepage
         window.location.href = "index.html";
       } else {
-        alert(`Error: ${result.message}`);
+        showToast(`Error: ${result.message}`, "error");
       }
     } catch (error) {
       console.log("Error signing in:", error);
-      alert("An error occured while signing in");
+      showToast("An error occured while signing in", "error");
     }
   });
 }
@@ -186,34 +222,75 @@ async function displayUsers() {
 
     const users = result.data;
 
-    // Get the logged-in user from localstorage.
-    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    allUsers = users;
 
-    let userList = document.getElementById("user-list");
-    if (!userList) {
-      userList = document.createElement("ul");
-      userList.id = "user-list";
-      document.body.appendChild(userList);
-    }
-    userList.innerHTML = ""; // Clear previous list
-
-    // Filter out the logged-in user
-    const filteredUsers = users.filter(
-      (user) => user.id !== loggedInUser.userId
-    );
-
-    filteredUsers.forEach((user) => {
-      const li = document.createElement("li");
-      li.textContent = `${user.first_name} ${user.last_name}`;
-      userList.appendChild(li);
-    });
+    renderUserCards(allUsers);
   } catch (error) {
     console.error("Error fetching users:", error);
   }
 }
 
+function renderUserCards(users) {
+  // Get the logged-in user from localstorage.
+  const loggedInUserData = localStorage.getItem("user");
+  if (!loggedInUserData) return;
+  const loggedInUser = JSON.parse(loggedInUserData);
+
+  let userList = document.getElementById("user-list");
+  if (!userList) {
+    userList = document.createElement("ul");
+    userList.id = "user-list";
+    document.body.appendChild(userList);
+  }
+  userList.innerHTML = ""; // Clear previous list
+
+  // Filter out the logged-in user
+  const filteredUsers = users.filter((user) => user.id !== loggedInUser.userId);
+
+  // Sort users by last name with null safety
+  const sortedUsersByLastName = filteredUsers.sort(
+    (a, b) => a.last_name?.localeCompare(b.last_name) || 0
+  );
+
+  sortedUsersByLastName.forEach((user) => {
+    const card = document.createElement("div");
+    card.className = "user-card";
+    card.innerHTML = `
+    <h3>${user.first_name} ${user.last_name}</h3>
+    <p>${user.email}</p>
+  `;
+
+    const btn = document.createElement("button");
+    btn.textContent = "Send friend request";
+    btn.addEventListener("click", () => {
+      // Friend request logic here
+      showToast(`Friend request sent to ${user.first_name} ${user.last_name}`);
+    });
+
+    card.appendChild(btn);
+    userList.appendChild(card);
+  });
+}
+
 if (window.location.pathname.endsWith("users.html")) {
-  window.addEventListener("DOMContentLoaded", displayUsers);
+  window.addEventListener("DOMContentLoaded", () => {
+    displayUsers();
+
+    const searchInput = document.getElementById("search-users-bar");
+    if (searchInput) {
+      searchInput.addEventListener("input", function () {
+        const searchTerm = searchInput.value.toLowerCase();
+        const filtered = allUsers.filter(
+          (user) =>
+            `${user.first_name} ${user.last_name}`
+              .toLowerCase()
+              .includes(searchTerm) ||
+            user.email.toLowerCase().includes(searchTerm)
+        );
+        renderUserCards(filtered);
+      });
+    }
+  });
 }
 
 //-----------------------------------------------------------------------------
@@ -271,14 +348,14 @@ async function fetchAndDisplayAllEvents() {
             );
             const result = await response.json();
             if (response.ok) {
-              alert(`Event with id:${eventId} deleted successfully.`);
+              showToast(`Event with id:${eventId} deleted successfully.`);
               fetchAndDisplayAllEvents(); //Refresh list
             } else {
-              alert(`Error: ${result.message}`);
+              showToast(`Error: ${result.message}`, "error");
             }
           } catch (error) {
             console.error("Error deleting event:", error);
-            alert("An error occured while deleting the event.");
+            showToast("An error occured while deleting the event.", "error");
           }
         }
       });
@@ -369,13 +446,15 @@ if (window.location.pathname.endsWith("profile.html")) {
         if (response.ok && result.data) {
           user = result.data;
         } else {
-          alert(`Error: ${result.message}`);
-          window.location.href = "index.html";
+          showToast(`Error: ${result.message}`, "error");
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1200);
           return;
         }
       } catch (error) {
         console.error("Error fetching user", error);
-        alert("Error fetching user profile");
+        showToast("Error fetching user profile", "error");
       }
     } else {
       user = JSON.parse(localStorage.getItem("user"));
