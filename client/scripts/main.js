@@ -175,7 +175,7 @@ if (signInForm) {
 }
 
 //-----------------------------------------------------------------------------
-// Fetch all usernames and display. For development
+// Fetch all usernames and display.
 //-----------------------------------------------------------------------------
 
 // Function to fetch and display user names
@@ -186,6 +186,9 @@ async function displayUsers() {
 
     const users = result.data;
 
+    // Get the logged-in user from localstorage.
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+
     let userList = document.getElementById("user-list");
     if (!userList) {
       userList = document.createElement("ul");
@@ -194,9 +197,14 @@ async function displayUsers() {
     }
     userList.innerHTML = ""; // Clear previous list
 
-    users.forEach((user) => {
+    // Filter out the logged-in user
+    const filteredUsers = users.filter(
+      (user) => user.id !== loggedInUser.userId
+    );
+
+    filteredUsers.forEach((user) => {
       const li = document.createElement("li");
-      li.textContent = `${user.name}`;
+      li.textContent = `${user.first_name} ${user.last_name}`;
       userList.appendChild(li);
     });
   } catch (error) {
