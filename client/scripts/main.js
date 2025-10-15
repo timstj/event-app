@@ -3,6 +3,8 @@
 const API_BASE_URL = "http://localhost:5001/api";
 
 let allUsers = [];
+let allFriendships = [];
+let loggedInUserId = null;
 
 //-----------------------------------------------------------------------------
 // Toast notification system
@@ -214,27 +216,38 @@ if (signInForm) {
 // Fetch all usernames and display.
 //-----------------------------------------------------------------------------
 
+// Function to fetch friendship for user
+async function fetchFriendships(userId) {
+  const response = await authFetch(
+    `${API_BASE_URL}/friends/friendships/${userId}`
+  );
+  const result = await response.json();
+  return result.data || [];
+}
+
 // Function to fetch and display user names
 async function displayUsers() {
   try {
     const response = await authFetch(`${API_BASE_URL}/user`);
     const result = await response.json();
-
     const users = result.data;
-
     allUsers = users;
 
-    renderUserCards(allUsers);
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    loggedInUserId = loggedInUser.userId;
+    allFriendships = await fetchFriendships(loggedInUserId);
+    renderUserCards(allUsers, allFriendships, loggedInUserId);
   } catch (error) {
     console.error("Error fetching users:", error);
   }
 }
 
-function renderUserCards(users) {
+function renderUserCards(users, friendships = [], loggedInUserId) {
   // Get the logged-in user from localstorage.
-  const loggedInUserData = localStorage.getItem("user");
-  if (!loggedInUserData) return;
-  const loggedInUser = JSON.parse(loggedInUserData);
+  if (!loggedInUserId) {
+    console.error("Could not fetch logged in user");
+    return;
+  }
 
   let userList = document.getElementById("user-list");
   if (!userList) {
@@ -245,7 +258,7 @@ function renderUserCards(users) {
   userList.innerHTML = ""; // Clear previous list
 
   // Filter out the logged-in user
-  const filteredUsers = users.filter((user) => user.id !== loggedInUser.userId);
+  const filteredUsers = users.filter((user) => user.id !== loggedInUserId);
 
   // Sort users by last name with null safety
   const sortedUsersByLastName = filteredUsers.sort(
@@ -260,13 +273,58 @@ function renderUserCards(users) {
     <p>${user.email}</p>
   `;
 
+    // Check friendship status
+    const friendship = friendships.find(
+      (f) =>
+        (f.user_id === loggedInUserId && f.friend_id === user.id) ||
+        (f.friend_id === loggedInUserId && f.user_id === user.id)
+    );
     const btn = document.createElement("button");
-    btn.textContent = "Send friend request";
-    btn.addEventListener("click", () => {
-      // Friend request logic here
-      showToast(`Friend request sent to ${user.first_name} ${user.last_name}`);
-    });
+    if (friendship) {
+      if (friendship.status === "pending") {
+        btn.textContent = "Request Sent";
+        btn.disabled = true;
+      } else if (friendship.status === "accepted") {
+        btn.textContent = "Friends";
+        btn.disabled = true;
+      } else {
+        btn.textContent = "Send friend request";
+      }
+    } else {
+      btn.textContent = "Send friend request";
+      btn.disabled = false;
+      btn.addEventListener("click", async () => {
+        // Friend request logic here
+        try {
+          const response = await authFetch(
+            `${API_BASE_URL}/friends/friend-request`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                userId: loggedInUserId, // sender
+                friendId: user.id, // Reciver
+              }),
+            }
+          );
 
+          const result = await response.json();
+          if (response.ok) {
+            showToast(
+              `Friend request sent to ${user.first_name} ${user.last_name}`
+            );
+            // Fetch updated friendships and rerender
+            allFriendships = await fetchFriendships(loggedInUserId);
+            renderUserCards(users, allFriendships, loggedInUserId);
+          } else {
+            showToast(`Error: ${result.message}`, "error");
+          }
+        } catch (error) {
+          showToast("Could not send friend request.", "error");
+          console.log(error);
+        }
+      });
+    }
     card.appendChild(btn);
     userList.appendChild(card);
   });
@@ -287,7 +345,7 @@ if (window.location.pathname.endsWith("users.html")) {
               .includes(searchTerm) ||
             user.email.toLowerCase().includes(searchTerm)
         );
-        renderUserCards(filtered);
+        renderUserCards(filtered, allFriendships, loggedInUserId);
       });
     }
   });

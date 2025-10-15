@@ -60,3 +60,15 @@ export const declineFriendRequestService = async (userId, friendId) => {
   );
   return result.rows[0];
 };
+
+export const getFriendshipsService = async (userId) => {
+  const result = await pool.query(
+    `
+        SELECT *
+        FROM friends
+        WHERE user_id = $1 OR friend_id = $1
+        `,
+    [userId]
+  );
+  return result.rows;
+};

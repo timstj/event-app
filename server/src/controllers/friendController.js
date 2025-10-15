@@ -4,6 +4,7 @@ import {
   getAllFriendsService,
   sendFriendRequestService,
   declineFriendRequestService,
+  getFriendshipsService,
 } from "../models/friendModel.js";
 
 const handleResponse = (res, status, message, data = null) => {
@@ -75,6 +76,18 @@ export const declineFriendRequest = async (req, res, next) => {
       );
     }
     handleResponse(res, 200, "Friend request declined", declined);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getFriendships = async (req, res, next) => {
+  const { userId } = req.params;
+  try {
+    const friendships = await getFriendshipsService(userId);
+    if (!friendships)
+      return handleResponse(res, 400, "Can not fetch friendships", friendships);
+    handleResponse(res, 200, "Friendships retrived", friendships);
   } catch (error) {
     next(error);
   }

@@ -4,6 +4,7 @@ import {
   declineFriendRequest,
   deleteFriend,
   getAllFriends,
+  getFriendships,
   sendFriendRequest,
 } from "../controllers/friendController.js";
 
@@ -14,6 +15,8 @@ const router = express.Router();
 router.use(authenticateJWT);
 
 router.post("/friend-request", sendFriendRequest);
+
+router.get("/friendships/:userId", getFriendships);
 
 router.get("/all/:userId", getAllFriends);
 
