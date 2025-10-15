@@ -5,8 +5,6 @@ const API_BASE_URL = "http://localhost:5001/api";
 let allUsers = [];
 
 //-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
 // Toast notification system
 //-----------------------------------------------------------------------------
 function showToast(message, type = "info") {
@@ -35,6 +33,8 @@ function showToast(message, type = "info") {
     toast.style.opacity = "0";
   }, 2500);
 }
+
+//-----------------------------------------------------------------------------
 // Helper function for token validation for backend.
 //-----------------------------------------------------------------------------
 function authFetch(url, options = {}) {

@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes.js"; // User routes
 import eventRoutes from "./routes/eventRoutes.js"; // Event routes
 import authRoutes from "./routes/authRoutes.js"; // Auth routes
+import friendRoutes from "./routes/friendRoutes.js"; // Friend routes
 import errorHandling from "./middlewares/errorHandler.js"; // Centralized error handling
 import createUserTable from "./data/createUserTable.js";
 import createEventTables from "./data/createEventTable.js";
@@ -33,6 +34,8 @@ app.use("/api/event", eventRoutes);
 
 app.use("/api/auth", authRoutes);
 
+app.use("/api/friends", friendRoutes);
+
 // Error handling middleware
 app.use(errorHandling);
 
@@ -49,3 +52,18 @@ createFriendsTable();
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+// Input validation middleware
+// + function validateUserAndFriendId(req, res, next) {
+// +   const { userId, friendId } = req.body;
+// +   if (!userId || !friendId) {
+// +     return res.status(400).json({ error: "userId and friendId are required" });
+// +   }
+// +   next();
+// + }
+// +
+// + router.post("/friend-request", validateUserAndFriendId, sendFriendRequest);
+// +
+// + router.get("/all/:userId", getAllFriends);
+// +
+// + router.put("/accept", validateUserAndFriendId, acceptFriendRequest);

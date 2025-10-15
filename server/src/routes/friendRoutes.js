@@ -1,5 +1,8 @@
 import express from "express";
 import {
+  acceptFriendRequest,
+  declineFriendRequest,
+  deleteFriend,
   getAllFriends,
   sendFriendRequest,
 } from "../controllers/friendController.js";
@@ -12,4 +15,12 @@ router.use(authenticateJWT);
 
 router.post("/friend-request", sendFriendRequest);
 
-router.get("/all", getAllFriends);
+router.get("/all/:userId", getAllFriends);
+
+router.put("/accept", acceptFriendRequest);
+
+router.put("/decline", declineFriendRequest);
+
+router.delete("/delete/", deleteFriend);
+
+export default router;

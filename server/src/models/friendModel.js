@@ -8,6 +8,18 @@ export const sendFriendRequestService = async (userId, friendId) => {
   return result.rows[0];
 };
 
+export const acceptFriendRequestService = async (userId, friendId) => {
+  const result = await pool.query(
+    `
+        UPDATE friends
+        SET status = 'accepted'
+        WHERE user_id = $1 AND friend_id = $2 AND status = 'pending'
+        RETURNING *`,
+    [userId, friendId]
+  );
+  return result.rows[0];
+};
+
 export const getAllFriendsService = async (userId) => {
   const result = await pool.query(
     `SELECT u.id, u.first_name, u.last_name, u.email, u.slug 
@@ -20,4 +32,31 @@ export const getAllFriendsService = async (userId) => {
     [userId]
   );
   return result.rows;
+};
+
+export const deleteFriendService = async (userId, friendId) => {
+  const result = await pool.query(
+    `
+        DELETE FROM friends
+        WHERE
+            (user_id = $1 AND friend_id = $2)
+            OR
+            (user_id = $2 AND friend_id = $1)
+        RETURNING *`,
+    [userId, friendId]
+  );
+  return result.rows[0];
+};
+
+export const declineFriendRequestService = async (userId, friendId) => {
+  const result = await pool.query(
+    `
+        UPDATE friends
+        SET status = 'declined'
+        WHERE user_id = $1 AND friend_id = $2 AND status = 'pending'
+        RETURNING *
+        `,
+    [userId, friendId]
+  );
+  return result.rows[0];
 };
