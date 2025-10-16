@@ -216,6 +216,81 @@ if (signInForm) {
 // Fetch all usernames and display.
 //-----------------------------------------------------------------------------
 
+async function displayIncomingRequests() {
+  const loggedInUser = JSON.parse(localStorage.getItem("user"));
+  if (!loggedInUser) return;
+  loggedInUserId = loggedInUser.userId;
+  const response = await authFetch(
+    `${API_BASE_URL}/friends/requests/incoming/${loggedInUserId}`
+  );
+  const result = await response.json();
+  const requests = result.data || [];
+
+  const requestsList = document.getElementById("incoming-requests-list");
+  requestsList.innerHTML = "";
+
+  if (requests && requests.length > 0) {
+    const h2 = document.createElement("h2");
+    h2.textContent = "Pending Friend Requests";
+
+    // Insert into a specific container (e.g., body, main content area, etc.)
+    const container = document.querySelector(".user-page-content"); // or whatever parent you want
+    container.insertBefore(h2, requestsList);
+  }
+
+  requests.forEach((req) => {
+    const div = document.createElement("div");
+    div.className = "request-card";
+    div.innerHTML = `
+      <span>${req.first_name} ${req.last_name} (${req.email})</span>
+      <button class="accept-btn">Accept</button>
+      <button class="decline-btn">Decline</button>
+    `;
+
+    div.querySelector(".accept-btn").addEventListener("click", async () => {
+      await acceptRequest(req.user_id, loggedInUserId);
+      displayIncomingRequests();
+    });
+
+    div.querySelector(".decline-btn").addEventListener("click", async () => {
+      await declineRequest(req.user_id, loggedInUserId);
+      displayIncomingRequests();
+    });
+
+    requestsList.appendChild(div);
+  });
+}
+
+async function acceptRequest(senderId, receiverId) {
+  const response = await authFetch(`${API_BASE_URL}/friends/accept`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      userId: senderId, // The one who sent the request
+      friendId: receiverId, // The one accepting/declining
+    }),
+  });
+  const result = await response.json();
+  if (!response.ok) {
+    showToast(result.message || "Failed to update request", "error");
+  }
+}
+
+async function declineRequest(senderId, receiverId) {
+  const response = await authFetch(`${API_BASE_URL}/friends/decline`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      userId: senderId, // The one who sent the request
+      friendId: receiverId, // The one accepting/declining
+    }),
+  });
+  const result = await response.json();
+  if (!response.ok) {
+    showToast(result.message || "Failed to update request", "error");
+  }
+}
+
 // Function to fetch friendship for user
 async function fetchFriendships(userId) {
   const response = await authFetch(
@@ -287,8 +362,9 @@ function renderUserCards(users, friendships = [], loggedInUserId) {
       } else if (friendship.status === "accepted") {
         btn.textContent = "Friends";
         btn.disabled = true;
-      } else {
-        btn.textContent = "Send friend request";
+      } else if (friendship.status === "declined") {
+        btn.textContent = "Declined";
+        btn.disabled = true;
       }
     } else {
       btn.textContent = "Send friend request";
@@ -333,6 +409,7 @@ function renderUserCards(users, friendships = [], loggedInUserId) {
 if (window.location.pathname.endsWith("users.html")) {
   window.addEventListener("DOMContentLoaded", () => {
     displayUsers();
+    displayIncomingRequests();
 
     const searchInput = document.getElementById("search-users-bar");
     if (searchInput) {

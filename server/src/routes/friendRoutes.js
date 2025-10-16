@@ -5,6 +5,7 @@ import {
   deleteFriend,
   getAllFriends,
   getFriendships,
+  getIncomingFriendRequests,
   sendFriendRequest,
 } from "../controllers/friendController.js";
 
@@ -17,6 +18,8 @@ router.use(authenticateJWT);
 router.post("/friend-request", sendFriendRequest);
 
 router.get("/friendships/:userId", getFriendships);
+
+router.get("/requests/incoming/:userId", getIncomingFriendRequests);
 
 router.get("/all/:userId", getAllFriends);
 

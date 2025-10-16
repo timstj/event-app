@@ -72,3 +72,15 @@ export const getFriendshipsService = async (userId) => {
   );
   return result.rows;
 };
+
+// Fetch incoming friend request where the logged-in user is the reciever.
+export const getIncomingFriendRequestsService = async (userId) => {
+  const result = await pool.query(
+    `SELECT f.*, u.first_name, u.last_name, u.email, u.slug
+     FROM friends f
+     JOIN users u ON u.id = f.user_id
+     WHERE f.friend_id = $1 AND f.status = 'pending'`,
+    [userId]
+  );
+  return result.rows;
+};
