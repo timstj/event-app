@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dev Admin Panel</title>
+    <style>
+      .admin-section {
+        margin-bottom: 2rem;
+      }
+      .admin-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .admin-card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 1rem;
+        min-width: 200px;
+      }
+      .admin-card button {
+        margin-top: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Development Admin Panel</h1>
+    <div class="admin-section">
+      <h2>Users</h2>
+      <div id="user-list" class="admin-list"></div>
+    </div>
+    <div class="admin-section">
+      <h2>Events</h2>
+      <div id="event-list" class="admin-list"></div>
+    </div>
+    <script src="scripts/dev_admin.js"></script>
+  </body>
+</html>
