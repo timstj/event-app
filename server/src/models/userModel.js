@@ -38,7 +38,7 @@ export const getAllEventsForUserService = async (userId) => {
 
 export const getUserBySlugService = async (slug) => {
   const result = await pool.query(
-    "SELECT id, first_name, last_name, email, slug FROM users WHERE slug = $1",
+    "SELECT id, first_name, last_name, email, slug, created_at FROM users WHERE slug = $1",
     [slug]
   );
   return result.rows[0];
