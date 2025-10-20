@@ -11,6 +11,11 @@ import { initCreateEventPage } from "./pages/createEventPage.js";
 import { initMyEventsPage } from "./pages/myEventsPage.js";
 import { initProfilePage } from "./pages/profilePage.js";
 import { initRegisterPage } from "./auth/registrationHandler.js";
+import {
+  initNavigation,
+  updateNavigationForAuth,
+  setActiveNavigation,
+} from "./components/navigationBar.js";
 
 /**
  * Pages that don't require authentication
@@ -25,25 +30,39 @@ function checkAuthentication() {
   const isPublicPage = PUBLIC_PAGES.some((page) => currentPage === page);
 
   if (!isPublicPage) {
-    requireAuth();
+    const isAuthenticated = requireAuth();
+    updateNavigationForAuth(isAuthenticated);
+    return isAuthenticated;
   }
+  return true;
 }
 
 /**
  * Initialize page-specific functionality
  */
 function initializePages() {
+  const currentPage = window.location.pathname.split("/").pop() || "index.html";
+  const isPublicPage = PUBLIC_PAGES.some((page) => currentPage === page);
+
+  if (!isPublicPage) {
+    // Init global navigation
+    initNavigation();
+
+    // Set active navigation state
+    setActiveNavigation(currentPage);
+  }
   // Authentication pages
   initLoginPage();
   initRegisterPage();
 
-  // Main application pages
-  initIndexPage();
-  initUsersPage();
-  initCreateEventPage();
-  initMyEventsPage();
-  initProfilePage();
-  // TODO: Add other page initializers as we create them
+  // Main application pages (only initialize if not public page)
+  if (!isPublicPage) {
+    initIndexPage();
+    initUsersPage();
+    initCreateEventPage();
+    initMyEventsPage();
+    initProfilePage();
+  }
 }
 
 /**
