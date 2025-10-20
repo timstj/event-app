@@ -23,7 +23,10 @@ export function initLoginPage() {
     return;
   }
 
-  signInForm.addEventListener("submit", handleLoginSubmit);
+  signInForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    handleLoginSubmit(event)
+  });
 
   // Setup form validation
   setupFormValidation();
