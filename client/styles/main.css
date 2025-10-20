@@ -189,6 +189,235 @@ body {
   margin: 0 auto;
 }
 
+/* Friends Section Styles */
+.my-friends-section {
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(79, 138, 139, 0.1);
+}
+
+.my-friends-section h2 {
+  color: #4f8a8b;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  text-align: center;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+#friends-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  min-height: 80px;
+}
+
+/* Friend Card Styles */
+.friend-card {
+  background: linear-gradient(135deg, rgba(79, 138, 139, 0.08), rgba(247, 107, 138, 0.08));
+  border: 2px solid rgba(79, 138, 139, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  min-width: 280px;
+  max-width: 300px;
+  flex: 1 1 280px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+
+.friend-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(79, 138, 139, 0.25);
+  border-color: rgba(79, 138, 139, 0.5);
+  background: linear-gradient(135deg, rgba(79, 138, 139, 0.12), rgba(247, 107, 138, 0.12));
+}
+
+.friend-info {
+  flex: 1;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.friend-info:hover h3 {
+  color: #2c5f60;
+}
+
+.friend-info h3 {
+  color: #4f8a8b;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.3rem;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.friend-email {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Friend Actions */
+.friend-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.btn-view-profile {
+  background: linear-gradient(135deg, #4f8a8b, #2c5f60);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  min-width: 120px;
+  text-align: center;
+}
+
+.btn-view-profile:hover {
+  background: linear-gradient(135deg, #2c5f60, #1a4344);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 138, 139, 0.4);
+}
+
+.btn-remove-friend {
+  background: transparent;
+  color: #dc3545;
+  border: 2px solid #dc3545;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  min-width: 120px;
+  text-align: center;
+}
+
+.btn-remove-friend:hover {
+  background: #dc3545;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+/* Empty State for Friends */
+.friends-empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #666;
+  background: rgba(79, 138, 139, 0.05);
+  border: 2px dashed rgba(79, 138, 139, 0.3);
+  border-radius: 12px;
+  font-size: 1rem;
+  line-height: 1.6;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.friends-empty-state p {
+  margin: 0.5rem 0;
+}
+
+.friends-empty-state p:first-child {
+  font-weight: bold;
+  color: #4f8a8b;
+  font-size: 1.1rem;
+}
+
+/* Friend Card Animations */
+.friend-card-removing {
+  opacity: 0;
+  transform: translateX(-100%) scale(0.8);
+  transition: all 0.3s ease;
+}
+
+/* Responsive Design for Friend Cards */
+@media (max-width: 768px) {
+  .my-friends-section {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .my-friends-section h2 {
+    font-size: 1.5rem;
+  }
+  
+  .friend-card {
+    min-width: 250px;
+    max-width: 100%;
+    flex: 1 1 250px;
+    padding: 1.25rem;
+  }
+  
+  .friend-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .btn-view-profile,
+  .btn-remove-friend {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  #friends-list {
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .my-friends-section {
+    padding: 1rem;
+  }
+  
+  .my-friends-section h2 {
+    font-size: 1.3rem;
+  }
+  
+  .friend-card {
+    min-width: 220px;
+    padding: 1rem;
+  }
+  
+  .friend-info h3 {
+    font-size: 1.2rem;
+  }
+  
+  .friend-email {
+    font-size: 0.85rem;
+  }
+  
+  .friends-empty-state {
+    padding: 2rem 1rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Ensure friends section is above users section */
+.my-friends-section + h2 {
+  margin-top: 2rem;
+  color: #4f8a8b;
+  text-align: center;
+  font-size: 1.8rem;
+}
+
 /* Search bar styling */
 #search-users-bar {
   width: 100%;

@@ -94,11 +94,19 @@ export async function apiPut(url, data) {
 /**
  * Helper function for DELETE requests
  * @param {string} url - The API endpoint URL
+ * @param {object} data - Optional data to send in request body
  * @returns {Promise<any>} - Parsed JSON response
  */
-export async function apiDelete(url) {
-  const response = await authFetch(url, {
+export async function apiDelete(url, data = null) {
+  const options = {
     method: "DELETE",
-  });
+  };
+  
+  // Add body support for DELETE requests
+  if (data) {
+    options.body = JSON.stringify(data);
+  }
+  
+  const response = await authFetch(url, options);
   return await response.json();
 }

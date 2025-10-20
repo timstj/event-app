@@ -12,6 +12,7 @@ import {
 } from "../components/userCard.js";
 import { renderFriendRequests } from "../components/friendRequestCard.js";
 import { showError } from "../components/toast.js";
+import { renderFriendCards } from "../components/friendCard.js";
 
 // Page state
 let allUsers = [];
@@ -43,11 +44,12 @@ export async function initUsersPage() {
     loggedInUserId = currentUser.userId;
 
     // Load page data
-    await Promise.all([loadUsersData(), loadIncomingRequests()]);
+    await Promise.all([loadUsersData(), loadIncomingRequests(), loadAndDisplayFriends()]);
 
     // Setup page interactions
     setupSearch();
     setupEventListeners();
+    setupFriendsEventListeners();
   } catch (error) {
     console.error("Error initializing users page:", error);
     showError("Failed to load page. Please refresh.");
@@ -102,6 +104,28 @@ async function loadIncomingRequests() {
 }
 
 /**
+ * Load and display all friends
+ * @private
+ */
+async function loadAndDisplayFriends() {
+  const friendsContainer = document.getElementById("friends-list");
+  if (!friendsContainer) return;
+
+  try {
+    const friends = await FriendService.getFriends(loggedInUserId);
+
+    renderFriendCards(friends, loggedInUserId, friendsContainer);
+  } catch (error) {
+    console.error("Error loading friends:", error);
+    friendsContainer.innerHTML = `
+      <div class="friends-empty-state">
+        <p>Unable to load friends. Please try again.</p>
+      </div>
+    `;
+  }
+}
+
+/**
  * Setup search functionality
  * @private
  */
@@ -144,6 +168,19 @@ function setupEventListeners() {
 
   // Listen for friend request handled event
   document.addEventListener("friendRequestHandled", handleFriendRequestHandled);
+}
+
+/**
+ * Setup event listeners for friend changes
+ * @private
+ */
+function setupFriendsEventListeners() {
+  document.addEventListener("friendshipChanged", async () => {
+    // Refresh friends list when friendship changes
+    await loadAndDisplayFriends();
+    // Also refresh user cards to update button states
+    await refreshFriendshipsData();
+  });
 }
 
 /**

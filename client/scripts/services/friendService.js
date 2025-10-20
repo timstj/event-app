@@ -121,7 +121,7 @@ export class FriendService {
    */
   static async removeFriend(userId, friendId) {
     try {
-      const result = await apiDelete(`${API_BASE_URL}/friends/remove`, {
+      const result = await apiDelete(`${API_BASE_URL}/friends/delete`, {
         userId,
         friendId,
       });
@@ -139,7 +139,7 @@ export class FriendService {
    */
   static async getFriends(userId) {
     try {
-      const result = await apiGet(`${API_BASE_URL}/friends/${userId}`);
+      const result = await apiGet(`${API_BASE_URL}/friends/all/${userId}`);
       return result.data || [];
     } catch (error) {
       console.error("Error fetching friends:", error);

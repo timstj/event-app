@@ -27,6 +27,6 @@ router.put("/accept", acceptFriendRequest);
 
 router.put("/decline", declineFriendRequest);
 
-router.delete("/delete/", deleteFriend);
+router.delete("/delete", deleteFriend);
 
 export default router;
