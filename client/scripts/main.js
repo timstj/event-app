@@ -3,26 +3,27 @@
  * Handles global setup and page-specific initialization
  */
 
-import { requireAuth } from './auth/authUtils.js';
-import { initLoginPage } from './auth/loginHandler.js';
-import { initUsersPage } from './pages/usersPage.js';
-import { initIndexPage } from './pages/indexPage.js';
-import { initCreateEventPage } from './pages/createEventPage.js';
-import { initMyEventsPage } from './pages/myEventsPage.js';
-import { initProfilePage } from './pages/profilePage.js';
+import { requireAuth } from "./auth/authUtils.js";
+import { initLoginPage } from "./auth/loginHandler.js";
+import { initUsersPage } from "./pages/usersPage.js";
+import { initIndexPage } from "./pages/indexPage.js";
+import { initCreateEventPage } from "./pages/createEventPage.js";
+import { initMyEventsPage } from "./pages/myEventsPage.js";
+import { initProfilePage } from "./pages/profilePage.js";
+import { initRegisterPage } from "./auth/registrationHandler.js";
 
 /**
  * Pages that don't require authentication
  */
-const PUBLIC_PAGES = ['sign_in.html', 'sign_up.html'];
+const PUBLIC_PAGES = ["sign_in.html", "sign_up.html"];
 
 /**
  * Check if current page requires authentication
  */
 function checkAuthentication() {
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-  const isPublicPage = PUBLIC_PAGES.some(page => currentPage === page);
-  
+  const currentPage = window.location.pathname.split("/").pop() || "index.html";
+  const isPublicPage = PUBLIC_PAGES.some((page) => currentPage === page);
+
   if (!isPublicPage) {
     requireAuth();
   }
@@ -34,8 +35,8 @@ function checkAuthentication() {
 function initializePages() {
   // Authentication pages
   initLoginPage();
-  // TODO: Add initRegisterPage() when created
-  
+  initRegisterPage();
+
   // Main application pages
   initIndexPage();
   initUsersPage();
@@ -49,13 +50,13 @@ function initializePages() {
  * Global error handling
  */
 function setupGlobalErrorHandling() {
-  window.addEventListener('error', (event) => {
-    console.error('Global error:', event.error);
+  window.addEventListener("error", (event) => {
+    console.error("Global error:", event.error);
     // Could send to error reporting service
   });
 
-  window.addEventListener('unhandledrejection', (event) => {
-    console.error('Unhandled promise rejection:', event.reason);
+  window.addEventListener("unhandledrejection", (event) => {
+    console.error("Unhandled promise rejection:", event.reason);
     // Could send to error reporting service
   });
 }
@@ -70,4 +71,4 @@ function initApp() {
 }
 
 // Start the application when DOM is ready
-document.addEventListener('DOMContentLoaded', initApp);
+document.addEventListener("DOMContentLoaded", initApp);
