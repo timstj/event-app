@@ -11,6 +11,8 @@ import {
   apiDelete,
 } from "../utils/api.js";
 
+const FRIEND_API_URL = `${API_BASE_URL}/friends`
+
 /**
  * Friend service class
  * Contains all friend-related API methods
@@ -60,9 +62,9 @@ export class FriendService {
    */
   static async sendFriendRequest(fromUserId, toUserId) {
     try {
-      const result = await apiPost(`${API_BASE_URL}/friendship`, {
-        user_id: fromUserId,
-        friend_id: toUserId,
+      const result = await apiPost(`${API_BASE_URL}/friends/friend-request`, {
+        userId: fromUserId,
+        friendId: toUserId,
         status: "pending",
       });
       return result.data;
