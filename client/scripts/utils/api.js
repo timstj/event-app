@@ -31,16 +31,24 @@ export async function authFetch(url, options = {}) {
     });
 
     // Handle authentication errors globally
-    if (response.status === 401) {
+    if (response.status === 401 || response.status === 403) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       window.location.href = "sign_in.html";
       throw new Error("Session expired. Please sign in again.");
     }
 
+    // Handle other HTTP errors
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      const errorMessage = errorData.message || `HTTP ${response.status}: ${response.statusText}`;
+      throw new Error(errorMessage);
+    }
+
     return response;
   } catch (error) {
     console.error("API request failed:", error);
+    window.location.href = "sign_in.html";
     throw error;
   }
 }
