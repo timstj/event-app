@@ -58,16 +58,19 @@ export class FriendService {
    * @param {number} friendId - Receiver's user ID
    * @returns {Promise<object>} - API response
    */
-  static async sendFriendRequest(userId, friendId) {
+  static async sendFriendRequest(fromUserId, toUserId) {
     try {
-      const result = await apiPost(`${API_BASE_URL}/friends/friend-request`, {
-        userId,
-        friendId,
+      const result = await apiPost(`${API_BASE_URL}/friendship`, {
+        user_id: fromUserId,
+        friend_id: toUserId,
+        status: "pending",
       });
-      return result;
+      return result.data;
     } catch (error) {
-      console.error("Error sending friend request:", error);
-      throw new Error("Failed to send friend request");
+      console.error("Error in FriendService.sendFriendRequest:", error);
+
+      // re-throw the error to catch
+      throw error;
     }
   }
   /**
