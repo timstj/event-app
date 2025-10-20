@@ -10,7 +10,9 @@
  */
 export function requireAuth(redirectUrl = "sign_in.html") {
   const token = localStorage.getItem("token");
-  if (!token) {
+  const user = getLoggedInUser();
+  if (!token || !user) {
+    clearSession();
     window.location.href = redirectUrl;
     return false;
   }
