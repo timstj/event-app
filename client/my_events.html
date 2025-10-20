@@ -3,9 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Events</title>
+    <title>My Events - Event App</title>
     <link rel="stylesheet" href="./styles/main.css" />
   </head>
+
   <body>
     <div class="top-banner">
       <button
@@ -37,17 +38,55 @@
       ></button>
     </div>
 
-    <div class="my-events-section">
-      <!-- Hosted Events Section (initially hidden) -->
-      <div id="hosted-events-section" style="display: none">
-        <h2>Events I'm Hosting</h2>
-        <div id="hosted-events-list"></div>
+    <div class="my-events-content">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1 class="page-title">My Events</h1>
+        <button id="create-new-event-btn" class="btn-create-event">
+          &#43; Create New Event
+        </button>
       </div>
 
-      <!-- All Events Section -->
-      <h2>All Events</h2>
-      <div id="events-list"></div>
+      <!-- Event Statistics -->
+      <div class="event-stats">
+        <div class="stat-card">
+          <div class="stat-number" id="total-events-count">0</div>
+          <div class="stat-label">Total Events</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="upcoming-events-count">0</div>
+          <div class="stat-label">Upcoming</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="past-events-count">0</div>
+          <div class="stat-label">Past Events</div>
+        </div>
+      </div>
+
+      <!-- Search and Filter Section -->
+      <div class="controls-section">
+        <input
+          type="text"
+          id="search-my-events"
+          placeholder="Search your events..."
+          class="search-input"
+        />
+
+        <div class="filter-buttons">
+          <button id="filter-all" class="filter-btn active">All Events</button>
+          <button id="filter-upcoming" class="filter-btn">Upcoming</button>
+          <button id="filter-past" class="filter-btn">Past Events</button>
+        </div>
+      </div>
+
+      <!-- Events List -->
+      <div class="events-section">
+        <div id="my-events-list" class="events-container">
+          <!-- Event cards will be populated here -->
+        </div>
+      </div>
     </div>
-    <script src="scripts/main.js"></script>
+
+    <script type="module" src="scripts/main.js"></script>
   </body>
 </html>

@@ -38,6 +38,26 @@
       ></button>
     </div>
 
-    <script src="scripts/main.js"></script>
+    <div class="dashboard-content">
+      <section class="upcoming-events-section">
+        <h2 class="section-title">Upcoming Events</h2>
+        <div id="upcoming-events" class="events-container"></div>
+      </section>
+
+      <!-- My Events Section -->
+      <section class="my-events-section">
+        <div class="section-header">
+          <h2 class="section-title">My Recent Events</h2>
+          <a href="my_events.html" class="view-all-link"
+            >View All My Events →</a
+          >
+        </div>
+        <div id="my-events-preview" class="events-container">
+          <!-- My event cards will be populated here -->
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="scripts/main.js"></script>
   </body>
 </html>

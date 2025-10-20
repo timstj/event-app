@@ -39,18 +39,20 @@
     </div>
 
     <div class="user-page-content">
-      <ul id="incoming-requests-list"></ul>
+      <!-- Changed from <ul> to <div> for friend requests -->
+      <div class="incoming-requests-section"></div>
+
       <h2>Users</h2>
       <input
         type="text"
         id="search-users-bar"
         placeholder="Search for users..."
       />
-      <ul id="user-list">
-        <!-- User names will be populated here -->
-      </ul>
+      <div id="user-list">
+        <!-- User cards will be populated here -->
+      </div>
     </div>
 
-    <script src="scripts/main.js"></script>
+    <script type="module" src="scripts/main.js"></script>
   </body>
 </html>

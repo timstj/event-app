@@ -43,30 +43,30 @@
       <h2>Create a New Event</h2>
       <form id="create-event-form">
         <label for="event-title">Event Title:</label>
-        <input type="text" id="event-title" name="event-title" required />
+        <input type="text" id="event-title" name="title" required />
 
         <label for="event-date">Date:</label>
-        <input type="date" id="event-date" name="event-date" required />
+        <input type="date" id="event-date" name="date" required />
 
         <label for="event-time">Time:</label>
-        <input type="time" id="event-time" name="event-time" required />
+        <input type="time" id="event-time" name="time" required />
 
         <label for="event-location">Location:</label>
-        <input type="text" id="event-location" name="event-location" required />
+        <input type="text" id="event-location" name="location" />
 
         <label for="event-description">Description:</label>
         <textarea
           id="event-description"
-          name="event-description"
+          name="description"
           rows="4"
           cols="50"
-          required
         ></textarea>
 
-        <input type="submit" value="Create Event" />
+        <!-- Changed from input to button and added type="submit" -->
+        <button type="submit">Create Event</button>
       </form>
     </div>
 
-    <script src="scripts/main.js"></script>
+    <script type="module" src="scripts/main.js"></script>
   </body>
 </html>

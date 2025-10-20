@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profile</title>
+    <title>Profile - Event App</title>
     <link rel="stylesheet" href="./styles/main.css" />
   </head>
 
@@ -39,24 +39,119 @@
     </div>
 
     <div class="profile-container">
-      <div class="profile-header">
-        <!-- Dynamically insert user info -->
-        <div class="profile-buttons">
-          <button id="edit-profile-button">Edit Profile</button>
-          <button class="nav-btn" id="settings-button" data-url="settings.html">
-            Settings
-          </button>
-          <button id="sign-out-button" data-url="sign_in.html">Sign Out</button>
+      <div id="profile-content">
+        <!-- Profile View Mode (Default) -->
+        <div id="profile-view-mode" class="profile-section">
+          <div class="profile-header">
+            <div class="profile-avatar">
+              <div class="avatar-circle">
+                <span id="profile-initials">U</span>
+              </div>
+            </div>
+            <div class="profile-info">
+              <h1 id="profile-name">Loading...</h1>
+              <p class="profile-email" id="profile-email">Loading...</p>
+              <p class="profile-join-date">
+                Member since: <span id="profile-join-date">Loading...</span>
+              </p>
+            </div>
+            <div class="profile-actions">
+              <button id="edit-profile-btn" class="btn-primary" style="display: none">
+                Edit Profile
+              </button>
+              <button id="change-password-btn" class="btn-secondary" style="display: none">
+                Change Password
+              </button>
+              <button id="logout-btn" class="btn-danger" style="display: none">Sign Out</button>
+
+              <!-- Social Actions (hidden for own profile) -->
+              <button
+                id="send-friend-request-btn"
+                class="btn-primary"
+                style="display: none"
+              >
+                Add Friend
+              </button>
+              <button
+                id="message-btn"
+                class="btn-secondary"
+                style="display: none"
+              >
+                Message
+              </button>
+            </div>
+          </div>
+
+          <!-- To show events stats, currently not implemented -->
+          <div class="profile-stats">
+            <div class="stat-card">
+              <div class="stat-number" id="user-events-count">0</div>
+              <div class="stat-label">Events Created</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="user-upcoming-count">0</div>
+              <div class="stat-label">Upcoming Events</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="user-invites-count">0</div>
+              <div class="stat-label">Event Invites</div>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="activity-feed-section">
-        <h3>Activity Feed</h3>
-        <div id="activity-feed">
-          <!-- Activity feed items will be dynamically inserted here -->
+
+        <!-- Profile Edit Mode (Hidden by default) -->
+        <div
+          id="profile-edit-mode"
+          class="profile-section"
+          style="display: none"
+        >
+          <div class="edit-profile-header">
+            <h2>Edit Profile</h2>
+            <p>Update your profile information below</p>
+          </div>
+
+          <form class="edit-profile-form">
+            <div class="form-group">
+              <label for="edit-first-name">First Name</label>
+              <input
+                type="text"
+                id="edit-first-name"
+                placeholder="Enter your first name"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="edit-last-name">Last Name</label>
+              <input
+                type="text"
+                id="edit-last-name"
+                placeholder="Enter your last name"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="edit-email">Email Address</label>
+              <input
+                type="email"
+                id="edit-email"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+
+            <div class="form-actions">
+              <button type="button" id="save-profile-btn" class="btn-primary">
+                Save Changes
+              </button>
+              <button type="button" id="cancel-edit-btn" class="btn-secondary">
+                Cancel
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
 
-    <script src="scripts/main.js"></script>
+    <script type="module" src="scripts/main.js"></script>
   </body>
 </html>
