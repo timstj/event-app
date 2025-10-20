@@ -10,10 +10,10 @@ export const getUserByIdService = async (id) => {
   return result.rows[0];
 };
 
-export const updateUserService = async (id, name, email) => {
+export const updateUserService = async (id, first_name, last_name, email) => {
   const result = await pool.query(
-    "UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *",
-    [name, email, id]
+    "UPDATE users SET first_name = $1, last_name = $2, email = $3 WHERE id = $4 RETURNING *",
+    [first_name, last_name, email, id]
   );
   return result.rows[0];
 };

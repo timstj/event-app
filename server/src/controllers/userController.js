@@ -41,11 +41,11 @@ export const getUserById = async (req, res, next) => {
 
 export const updateUser = async (req, res, next) => {
   const { id } = req.params;
-  const { name, email } = req.body;
+  const { first_name, last_name, email } = req.body;
   try {
-    const updateUser = await updateUserService(id, name, email);
-    if (!updateUser) return handleResponse(res, 404, "User not found");
-    handleResponse(res, 200, "User updated successfully by id", updateUser);
+    const updatedUser = await updateUserService(id, first_name, last_name, email);
+    if (!updatedUser) return handleResponse(res, 404, "User not found");
+    handleResponse(res, 200, "User updated successfully by id", updatedUser);
   } catch (error) {
     next(error);
   }
