@@ -61,14 +61,11 @@ async function loadEventsData() {
     // Load both all events and hosted events in parallel
 
     allEvents = await EventService.getAllEvents();
-    console.log(allEvents);
 
     hostedEvents = allEvents.filter(
       (event) => event.host_id === loggedInUserId
     );
 
-    console.log("All events:", allEvents);
-    console.log("Hosted events:", hostedEvents);
     // Render upcoming events (from all events)
     const upcomingEventsContainer = document.getElementById("upcoming-events");
     if (upcomingEventsContainer) {
@@ -119,8 +116,6 @@ function setupEventListeners() {
   document.addEventListener("eventUpdated", handleEventUpdated);
   document.addEventListener("eventCreated", handleEventCreated);
 
-  // Setup navigation buttons
-  setupNavigationButtons();
 }
 
 /**
@@ -165,49 +160,6 @@ async function handleEventDeleted(event) {
     await loadEventsData();
   } catch (error) {
     console.error("Error handling event deletion:", error);
-  }
-}
-
-/**
- * Setup navigation buttons
- * @private
- */
-function setupNavigationButtons() {
-  // Create Event button
-  const createEventBtn = document.getElementById("create-event-button");
-  if (createEventBtn) {
-    createEventBtn.addEventListener("click", () => {
-      window.location.href = "create_event.html";
-    });
-  }
-
-  // My Events button
-  const myEventsBtn = document.getElementById("my-events-button");
-  if (myEventsBtn) {
-    myEventsBtn.addEventListener("click", () => {
-      window.location.href = "my_events.html";
-    });
-  }
-
-  // Users button
-  const usersBtn = document.getElementById("users-button");
-  if (usersBtn) {
-    usersBtn.addEventListener("click", () => {
-      window.location.href = "users.html";
-    });
-  }
-
-  // Profile button (if exists)
-  const profileBtn = document.getElementById("profile-button");
-  if (profileBtn) {
-    profileBtn.addEventListener("click", () => {
-      const currentUser = getLoggedInUser();
-      if (currentUser && currentUser.slug) {
-        window.location.href = `profile.html?slug=${currentUser.slug}`;
-      } else {
-        window.location.href = "profile.html";
-      }
-    });
   }
 }
 

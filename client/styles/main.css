@@ -965,6 +965,7 @@ body {
 .btn-join-event,
 .btn-leave-event,
 .btn-edit-event,
+.btn-manage-invites,
 .btn-delete-event {
   padding: 8px 16px;
   border: none;
@@ -986,6 +987,11 @@ body {
 
 .btn-edit-event {
   background-color: #2196f3;
+  color: white;
+}
+
+.btn-manage-invites {
+  background-color: #2a461c;
   color: white;
 }
 
