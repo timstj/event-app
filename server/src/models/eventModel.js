@@ -122,3 +122,73 @@ export const getAllEventsByHostService = async (userId) => {
   );
   return result.rows;
 };
+
+export const updateInvitationStatusService = async (eventId, userId, status) => {
+  // validation
+  const validStatuses = ['pending', 'accepted', 'maybe', 'declined'];
+  if (!validStatuses.includes(status)) {
+    throw new Error(`Invalid status. Must be one of: ${validStatuses.join(', ')}`);
+  }
+
+  // Check if invitation exists
+  const inviteCheck = await pool.query(
+    "SELECT * FROM event_invites WHERE event_id = $1 AND user_id = $2",
+    [eventId, userId]
+  );
+  
+  if (inviteCheck.rows.length === 0) {
+    throw new Error("Invitation not found");
+  }
+
+  // Don't update to same status
+  const currentInvite = inviteCheck.rows[0];
+  if (currentInvite.status === status) {
+    throw new Error(`Invitation is already ${status}`);
+  }
+
+  // Update the invitation status
+  const result = await pool.query(
+    "UPDATE event_invites SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE event_id = $2 AND user_id = $3 RETURNING *",
+    [status, eventId, userId]
+  );
+  
+  return result.rows[0];
+};
+
+export const getInvitationStatusService = async (eventId, userId) => {
+  const result = await pool.query(
+    "SELECT * FROM event_invites WHERE event_id = $1 AND user_id = $2",
+    [eventId, userId]
+  );
+  
+  return result.rows[0] || null;
+};
+
+/**
+ * Get attendees by status with user details
+ * @param {number} eventId - Event ID
+ * @param {string} status - Optional status filter
+ * @returns {Promise<Array>} - Array of attendees with user info
+ */
+export const getEventAttendeesService = async (eventId, status = null) => {
+  let query = `
+    SELECT 
+      u.id, u.first_name, u.last_name, u.email, u.slug,
+      ei.status, ei.created_at as invited_at, ei.updated_at as responded_at
+    FROM users u
+    JOIN event_invites ei ON u.id = ei.user_id
+    WHERE ei.event_id = $1
+  `;
+  
+  const params = [eventId];
+  
+  if (status) {
+    query += " AND ei.status = $2";
+    params.push(status);
+  }
+  
+  query += " ORDER BY ei.updated_at DESC";
+  
+  const result = await pool.query(query, params);
+  return result.rows;
+};

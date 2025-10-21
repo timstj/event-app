@@ -14,6 +14,9 @@ import {
   getAllInvitesForEvent,
   removeInvitedUser,
   getAllEventsByHost,
+  updateInvitationStatus,
+  getInvitationStatus,
+  getEventAttendees,
 } from "../controllers/eventController.js";
 
 import { authenticateJWT } from "../middlewares/authHandler.js"; // To validate JWT
@@ -41,5 +44,11 @@ router.post("/:eventId/host", setEventHost);
 router.get("/:eventId/invites", getAllInvitesForEvent);
 
 router.delete("/:eventId/invite/:userId/remove", removeInvitedUser);
+
+router.put("/invitation/status", updateInvitationStatus);
+
+router.get("/:eventId/invitation/status", getInvitationStatus);
+
+router.get("/:eventId/attendees", getEventAttendees);
 
 export default router;
