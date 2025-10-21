@@ -87,7 +87,20 @@ export const setEventHostService = async (eventId, userId) => {
 };
 
 export const getAllEventsService = async () => {
-  const result = await pool.query("SELECT * FROM events");
+  const query = `
+    SELECT 
+      e.*,
+      u.id as host_id,
+      u.first_name as host_first_name,
+      u.last_name as host_last_name,
+      u.email as host_email
+    FROM events e
+    LEFT JOIN event_hosts eh ON e.id = eh.event_id
+    LEFT JOIN users u ON eh.user_id = u.id
+    ORDER BY e.date ASC
+  `;
+
+  const result = await pool.query(query);
   return result.rows;
 };
 
@@ -123,11 +136,17 @@ export const getAllEventsByHostService = async (userId) => {
   return result.rows;
 };
 
-export const updateInvitationStatusService = async (eventId, userId, status) => {
+export const updateInvitationStatusService = async (
+  eventId,
+  userId,
+  status
+) => {
   // validation
-  const validStatuses = ['pending', 'accepted', 'maybe', 'declined'];
+  const validStatuses = ["pending", "accepted", "maybe", "declined"];
   if (!validStatuses.includes(status)) {
-    throw new Error(`Invalid status. Must be one of: ${validStatuses.join(', ')}`);
+    throw new Error(
+      `Invalid status. Must be one of: ${validStatuses.join(", ")}`
+    );
   }
 
   // Check if invitation exists
@@ -135,7 +154,7 @@ export const updateInvitationStatusService = async (eventId, userId, status) => 
     "SELECT * FROM event_invites WHERE event_id = $1 AND user_id = $2",
     [eventId, userId]
   );
-  
+
   if (inviteCheck.rows.length === 0) {
     throw new Error("Invitation not found");
   }
@@ -151,7 +170,7 @@ export const updateInvitationStatusService = async (eventId, userId, status) => 
     "UPDATE event_invites SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE event_id = $2 AND user_id = $3 RETURNING *",
     [status, eventId, userId]
   );
-  
+
   return result.rows[0];
 };
 
@@ -160,7 +179,7 @@ export const getInvitationStatusService = async (eventId, userId) => {
     "SELECT * FROM event_invites WHERE event_id = $1 AND user_id = $2",
     [eventId, userId]
   );
-  
+
   return result.rows[0] || null;
 };
 
@@ -179,16 +198,16 @@ export const getEventAttendeesService = async (eventId, status = null) => {
     JOIN event_invites ei ON u.id = ei.user_id
     WHERE ei.event_id = $1
   `;
-  
+
   const params = [eventId];
-  
+
   if (status) {
     query += " AND ei.status = $2";
     params.push(status);
   }
-  
+
   query += " ORDER BY ei.updated_at DESC";
-  
+
   const result = await pool.query(query, params);
   return result.rows;
 };

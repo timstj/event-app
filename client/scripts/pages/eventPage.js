@@ -20,11 +20,8 @@ export function initEventPage() {
   const currentPage = currentPath.split("/").pop() || "";
   // Only run on event.html
   if (currentPage !== "event.html") {
-    console.log("Not on event.html, skipping eventPage initialization");
     return;
   }
-
-  console.log("Initializing event page...");
 
   loggedInUser = getLoggedInUser();
   if (!loggedInUser) {
@@ -49,8 +46,6 @@ async function loadEventDetails() {
     const urlParams = new URLSearchParams(window.location.search);
     const eventId = urlParams.get("id");
 
-    console.log("Event ID from URL:", eventId);
-
     if (!eventId) {
       throw new Error("No event ID provided");
     }
@@ -61,14 +56,11 @@ async function loadEventDetails() {
     eventContent.style.display = "none";
 
     // Fetch event details
-    console.log("Fetching event details...");
     currentEvent = await EventService.getEventById(eventId);
 
     if (!currentEvent) {
       throw new Error("Event not found");
     }
-
-    console.log("Event loaded:", currentEvent);
 
     // Populate event details
     populateEventDetails(currentEvent);
@@ -95,7 +87,6 @@ async function loadEventDetails() {
  * @param {object} event - Event object
  */
 function populateEventDetails(event) {
-  console.log("Populating event details:", event);
 
   // Update page title
   document.title = `${event.title} - Event App`;
@@ -133,9 +124,7 @@ function populateEventDetails(event) {
  */
 async function loadInvitationStatus(eventId) {
   try {
-    console.log("Loading invitation status...");
     currentInvitation = await EventService.getInvitationStatus(eventId);
-    console.log("Invitation status:", currentInvitation);
 
     setupInvitationButtons();
   } catch (error) {
@@ -209,8 +198,6 @@ async function updateInvitationStatus(status) {
     // Disable buttons during update
     buttons.forEach((btn) => (btn.disabled = true));
 
-    console.log(`Updating status to: ${status}`);
-
     await EventService.updateInvitationStatus(
       currentEvent.id,
       loggedInUser.userId,
@@ -243,11 +230,9 @@ async function updateInvitationStatus(status) {
  */
 async function loadEventAttendees(eventId) {
   try {
-    console.log("Loading attendees...");
 
     // Load all attendees
     const allAttendees = await EventService.getEventAttendees(eventId);
-    console.log("All attendees:", allAttendees);
 
     // Separate by status
     const accepted = allAttendees.filter((a) => a.status === "accepted");

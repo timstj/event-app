@@ -53,6 +53,9 @@ function createEventCard(event, options) {
   const card = document.createElement("div");
   card.className = "event-card";
   
+  // Extract user
+  const creatorName = `${event.host_first_name} ${event.host_last_name}`
+  console.log(creatorName);
   // Format date
   const eventDate = new Date(event.date);
   const formattedDate = eventDate.toLocaleDateString('en-SE', {
@@ -83,7 +86,7 @@ function createEventCard(event, options) {
           <strong>${event.location || 'Location TBD'}</strong>
         </div>
         <div class="event-creator">
-          <strong>Created by: ${event.id || 'Unknown'}</strong>
+          <strong>Created by: ${creatorName}</strong>
         </div>
       </div>
     </div>
@@ -110,11 +113,9 @@ function createEventActions(event) {
 
   const loggedInUserId = getLoggedInUserId();
 
-  // Check if user is host (you'll need to modify this based on your data structure)
+  // Check if user is host
   const isHost =
-    event.creator_id === loggedInUserId ||
-    (event.hosts &&
-      event.hosts.some((host) => host.user_id === loggedInUserId));
+    event.host_id === loggedInUserId
 
   if (isHost) {
     // Host can edit/delete and manage invites
@@ -162,7 +163,7 @@ function setupEventActionListeners(actionsDiv, event) {
   if (manageBtn) {
     manageBtn.addEventListener("click", () => {
       // Navigate to invite management page or open modal
-      window.location.href = `event-invites.html?eventId=${event.id}`;
+      window.location.href = `event.html?id=${event.id}`;
     });
   }
 
@@ -179,7 +180,7 @@ function setupEventActionListeners(actionsDiv, event) {
   if (viewBtn) {
     viewBtn.addEventListener("click", () => {
       // Navigate to event details page
-      window.location.href = `event-details.html?eventId=${event.id}`;
+      window.location.href = `event.html?id=${event.id}`;
     });
   }
 }

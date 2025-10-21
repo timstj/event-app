@@ -3,10 +3,10 @@
  * Handles functionality for the main dashboard/home page
  */
 
-import { EventService } from '../services/eventService.js';
-import { getLoggedInUser, requireAuth } from '../auth/authUtils.js';
-import { renderEventCards } from '../components/eventCard.js';
-import { showError } from '../components/toast.js';
+import { EventService } from "../services/eventService.js";
+import { getLoggedInUser, requireAuth } from "../auth/authUtils.js";
+import { renderEventCards } from "../components/eventCard.js";
+import { showError } from "../components/toast.js";
 
 // Page state
 let allEvents = [];
@@ -18,9 +18,11 @@ let loggedInUserId = null;
  */
 export async function initIndexPage() {
   // Only run on index.html
-  if (!window.location.pathname.endsWith("index.html") && 
-      window.location.pathname !== "/" && 
-      !window.location.pathname.endsWith("/")) {
+  if (
+    !window.location.pathname.endsWith("index.html") &&
+    window.location.pathname !== "/" &&
+    !window.location.pathname.endsWith("/")
+  ) {
     return;
   }
 
@@ -44,7 +46,6 @@ export async function initIndexPage() {
 
     // Setup page interactions
     setupEventListeners();
-
   } catch (error) {
     console.error("Error initializing index page:", error);
     showError("Failed to load dashboard. Please refresh.");
@@ -58,21 +59,23 @@ export async function initIndexPage() {
 async function loadEventsData() {
   try {
     // Load both all events and hosted events in parallel
-    const [allEventsResult, hostedEventsResult] = await Promise.all([
-      EventService.getAllEvents(),
-      EventService.getHostedEvents()
-    ]);
 
-    allEvents = allEventsResult;
-    hostedEvents = hostedEventsResult;
+    allEvents = await EventService.getAllEvents();
+    console.log(allEvents);
 
+    hostedEvents = allEvents.filter(
+      (event) => event.host_id === loggedInUserId
+    );
+
+    console.log("All events:", allEvents);
+    console.log("Hosted events:", hostedEvents);
     // Render upcoming events (from all events)
     const upcomingEventsContainer = document.getElementById("upcoming-events");
     if (upcomingEventsContainer) {
       const upcomingEvents = getUpcomingEvents(allEvents);
       renderEventCards(upcomingEvents, upcomingEventsContainer, {
         showActions: true,
-        emptyMessage: "No upcoming events found."
+        emptyMessage: "No upcoming events found.",
       });
     }
 
@@ -81,10 +84,9 @@ async function loadEventsData() {
     if (myEventsContainer) {
       renderEventCards(hostedEvents.slice(0, 3), myEventsContainer, {
         showActions: false,
-        emptyMessage: "You haven't created any events yet."
+        emptyMessage: "You haven't created any events yet.",
       });
     }
-
   } catch (error) {
     console.error("Error loading events data:", error);
     showError("Failed to load events. Please refresh the page.");
@@ -101,7 +103,7 @@ function getUpcomingEvents(events) {
   const now = new Date();
   const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-  return events.filter(event => {
+  return events.filter((event) => {
     const eventDate = new Date(event.date);
     return eventDate >= now && eventDate <= nextWeek;
   });
@@ -113,9 +115,9 @@ function getUpcomingEvents(events) {
  */
 function setupEventListeners() {
   // Listen for event changes (remove join/leave events since they don't exist)
-  document.addEventListener('eventDeleted', handleEventDeleted);
-  document.addEventListener('eventUpdated', handleEventUpdated);
-  document.addEventListener('eventCreated', handleEventCreated);
+  document.addEventListener("eventDeleted", handleEventDeleted);
+  document.addEventListener("eventUpdated", handleEventUpdated);
+  document.addEventListener("eventCreated", handleEventCreated);
 
   // Setup navigation buttons
   setupNavigationButtons();
@@ -156,9 +158,9 @@ async function handleEventDeleted(event) {
   try {
     // Remove deleted event from local state
     const deletedEventId = event.detail.eventId;
-    allEvents = allEvents.filter(e => e.id !== deletedEventId);
-    hostedEvents = hostedEvents.filter(e => e.id !== deletedEventId);
-    
+    allEvents = allEvents.filter((e) => e.id !== deletedEventId);
+    hostedEvents = hostedEvents.filter((e) => e.id !== deletedEventId);
+
     // Refresh display
     await loadEventsData();
   } catch (error) {
