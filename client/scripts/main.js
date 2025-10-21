@@ -11,11 +11,14 @@ import { initCreateEventPage } from "./pages/createEventPage.js";
 import { initMyEventsPage } from "./pages/myEventsPage.js";
 import { initProfilePage } from "./pages/profilePage.js";
 import { initRegisterPage } from "./auth/registrationHandler.js";
+import { initEventPage } from "./pages/eventPage.js";
 import {
   initNavigation,
   updateNavigationForAuth,
   setActiveNavigation,
 } from "./components/navigationBar.js";
+
+// Add this line with your other page initializations
 
 /**
  * Pages that don't require authentication
@@ -62,6 +65,7 @@ function initializePages() {
     initCreateEventPage();
     initMyEventsPage();
     initProfilePage();
+    initEventPage();
   }
 }
 

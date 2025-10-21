@@ -3,7 +3,13 @@
  * Handles all event-related API operations
  */
 
-import { API_BASE_URL, apiGet, apiPost, apiPut, apiDelete } from '../utils/api.js';
+import {
+  API_BASE_URL,
+  apiGet,
+  apiPost,
+  apiPut,
+  apiDelete,
+} from "../utils/api.js";
 
 /**
  * Event service class
@@ -62,7 +68,10 @@ export class EventService {
    */
   static async updateEvent(eventId, eventData) {
     try {
-      const result = await apiPut(`${API_BASE_URL}/event/${eventId}`, eventData);
+      const result = await apiPut(
+        `${API_BASE_URL}/event/${eventId}`,
+        eventData
+      );
       return result.data;
     } catch (error) {
       console.error("Error updating event:", error);
@@ -107,7 +116,9 @@ export class EventService {
    */
   static async inviteUserToEvent(eventId, userId) {
     try {
-      const result = await apiPost(`${API_BASE_URL}/event/${eventId}/invite`, { userId });
+      const result = await apiPost(`${API_BASE_URL}/event/${eventId}/invite`, {
+        userId,
+      });
       return result;
     } catch (error) {
       console.error("Error inviting user to event:", error);
@@ -138,7 +149,9 @@ export class EventService {
    */
   static async removeInvitedUser(eventId, userId) {
     try {
-      const result = await apiDelete(`${API_BASE_URL}/event/${eventId}/invite/${userId}/remove`);
+      const result = await apiDelete(
+        `${API_BASE_URL}/event/${eventId}/invite/${userId}/remove`
+      );
       return result;
     } catch (error) {
       console.error("Error removing invited user:", error);
@@ -154,11 +167,76 @@ export class EventService {
    */
   static async setEventHost(eventId, userId) {
     try {
-      const result = await apiPost(`${API_BASE_URL}/event/${eventId}/host`, { userId });
+      const result = await apiPost(`${API_BASE_URL}/event/${eventId}/host`, {
+        userId,
+      });
       return result;
     } catch (error) {
       console.error("Error setting event host:", error);
       throw new Error("Failed to set event host");
+    }
+  }
+
+  /**
+   * Update invitation status (accept/maybe/decline)
+   * @param {number} eventId - Event ID
+   * @param {number} userId - User ID
+   * @param {string} status - 'accepted', 'maybe', 'declined'
+   * @returns {Promise<object>} - API response
+   */
+  static async updateInvitationStatus(eventId, userId, status) {
+    try {
+      const result = await apiPut(`${API_BASE_URL}/event/invitation/status`, {
+        eventId,
+        userId,
+        status,
+      });
+      return result;
+    } catch (error) {
+      console.error("Error updating invitation status:", error);
+      throw new Error(`Failed to ${status} invitation`);
+    }
+  }
+
+  /**
+   * Get user's invitation status for an event
+   * @param {number} eventId - Event ID
+   * @param {number} userId - User ID (optional, defaults to current user)
+   * @returns {Promise<object|null>} - Invitation object or null
+   */
+  static async getInvitationStatus(eventId, userId = null) {
+    try {
+      let url = `${API_BASE_URL}/event/${eventId}/invitation/status`;
+      if (userId) {
+        url += `?userId=${userId}`;
+      }
+
+      const result = await apiGet(url);
+      return result.data;
+    } catch (error) {
+      console.error("Error getting invitation status:", error);
+      return null;
+    }
+  }
+
+  /**
+   * Get event attendees with status filter
+   * @param {number} eventId - Event ID
+   * @param {string} statusFilter - Optional: 'accepted', 'maybe', 'declined'
+   * @returns {Promise<Array>} - Array of attendees
+   */
+  static async getEventAttendees(eventId, statusFilter = null) {
+    try {
+      let url = `${API_BASE_URL}/event/${eventId}/attendees`;
+      if (statusFilter) {
+        url += `?status=${statusFilter}`;
+      }
+
+      const result = await apiGet(url);
+      return result.data || [];
+    } catch (error) {
+      console.error("Error fetching attendees:", error);
+      throw new Error("Failed to load attendees");
     }
   }
 }
