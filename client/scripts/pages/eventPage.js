@@ -87,9 +87,9 @@ async function loadEventDetails() {
  * @param {object} event - Event object
  */
 function populateEventDetails(event) {
-
   // Update page title
   document.title = `${event.title} - Event App`;
+  console.log(event);
 
   // Event header
   document.getElementById("event-title").textContent = event.title;
@@ -102,12 +102,20 @@ function populateEventDetails(event) {
   const organizerElement = document
     .getElementById("event-organizer")
     .querySelector("span");
-  if (event.organizer_first_name && event.organizer_last_name) {
-    organizerElement.textContent = `${event.organizer_first_name} ${event.organizer_last_name}`;
+  if (event.host_first_name && event.host_last_name) {
+    organizerElement.textContent = `${event.host_first_name} ${event.host_last_name}`;
   } else {
     organizerElement.textContent = "Unknown";
   }
 
+  // Show edit button if current user is the host
+  const editBtn = document.getElementById("edit-btn");
+  if (editBtn && event.host_id === loggedInUser.userId) {
+    editBtn.style.display = "block";
+    editBtn.onclick = () => {
+      window.location.href = `create_event.html?edit=${currentEvent.id}`;
+    };
+  }
   // Event details
   document.getElementById("event-description-text").textContent =
     event.description || "No description provided.";
@@ -115,7 +123,6 @@ function populateEventDetails(event) {
     event.date
   );
   document.getElementById("event-location-full").textContent = event.location;
-
 }
 
 /**
@@ -230,7 +237,6 @@ async function updateInvitationStatus(status) {
  */
 async function loadEventAttendees(eventId) {
   try {
-
     // Load all attendees
     const allAttendees = await EventService.getEventAttendees(eventId);
 
@@ -321,7 +327,6 @@ function setupEventListeners() {
     declinedAttendees.style.display = isVisible ? "none" : "block";
     declinedHeader.classList.toggle("expanded", !isVisible);
   });
-
 }
 
 /**

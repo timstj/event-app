@@ -57,7 +57,8 @@ async function loadMyEventsData() {
   try {
     showLoadingState();
 
-    allMyEvents = await EventService.getHostedEvents();
+    const allEvents = await EventService.getAllEvents();
+    allMyEvents = allEvents.filter(event => event.host_id === loggedInUserId);
 
     // Render all events
     const eventsContainer = document.getElementById("my-events-list");

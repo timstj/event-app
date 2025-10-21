@@ -104,8 +104,24 @@ export const getAllEventsService = async () => {
   return result.rows;
 };
 
+// Update getEventByIdService to include host info
 export const getEventByIdService = async (id) => {
-  const result = await pool.query("SELECT * FROM events WHERE id = $1", [id]);
+  const query = `
+    SELECT 
+      e.*,
+      u.id as host_id,
+      u.first_name as host_first_name,
+      u.last_name as host_last_name,
+      u.email as host_email,
+      u.slug as host_slug
+    FROM events e
+    LEFT JOIN event_hosts eh ON e.id = eh.event_id
+    LEFT JOIN users u ON eh.user_id = u.id
+    WHERE e.id = $1
+    LIMIT 1
+  `;
+
+  const result = await pool.query(query, [id]);
   return result.rows[0];
 };
 
@@ -125,14 +141,24 @@ export const removeInvitedUserService = async (eventId, userId) => {
   return result.rows[0];
 };
 
+// Update getAllEventsByHostService to include host info
 export const getAllEventsByHostService = async (userId) => {
-  const result = await pool.query(
-    `SELECT e.*
+  const query = `
+    SELECT 
+      e.*,
+      u.id as host_id,
+      u.first_name as host_first_name,
+      u.last_name as host_last_name,
+      u.email as host_email,
+      u.slug as host_slug
     FROM events e
-    JOIN event_hosts h ON e.id = h.event_id
-    WHERE h.user_id = $1`,
-    [userId]
-  );
+    JOIN event_hosts eh ON e.id = eh.event_id
+    JOIN users u ON eh.user_id = u.id
+    WHERE eh.user_id = $1
+    ORDER BY e.date ASC
+  `;
+  
+  const result = await pool.query(query, [userId]);
   return result.rows;
 };
 

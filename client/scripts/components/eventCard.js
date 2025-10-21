@@ -55,7 +55,6 @@ function createEventCard(event, options) {
   
   // Extract user
   const creatorName = `${event.host_first_name} ${event.host_last_name}`
-  console.log(creatorName);
   // Format date
   const eventDate = new Date(event.date);
   const formattedDate = eventDate.toLocaleDateString('en-SE', {
