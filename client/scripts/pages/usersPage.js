@@ -24,7 +24,11 @@ let loggedInUserId = null;
  */
 export async function initUsersPage() {
   // Only run on users.html
-  if (!window.location.pathname.endsWith("users.html")) {
+  const currentPath = window.location.pathname;
+  const currentPage = currentPath.split('/').pop() || '';
+  
+  if (currentPage !== "users.html") {
+    console.log("Not on users.html, skipping usersPage initialization");
     return;
   }
 

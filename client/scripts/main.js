@@ -12,6 +12,7 @@ import { initMyEventsPage } from "./pages/myEventsPage.js";
 import { initProfilePage } from "./pages/profilePage.js";
 import { initRegisterPage } from "./auth/registrationHandler.js";
 import { initEventPage } from "./pages/eventPage.js";
+import { initInviteUsersPage } from "./pages/inviteUsersPage.js";
 import {
   initNavigation,
   updateNavigationForAuth,
@@ -66,6 +67,7 @@ function initializePages() {
     initMyEventsPage();
     initProfilePage();
     initEventPage();
+    initInviteUsersPage();
   }
 }
 

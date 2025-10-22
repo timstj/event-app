@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invite People - Event App</title>
+    <link rel="stylesheet" href="./styles/main.css" />
+  </head>
+
+  <body>
+    <div class="top-banner">
+      <button
+        class="nav-btn"
+        id="create-event-button"
+        data-url="create_event.html"
+      >
+        &#43; Create Event
+      </button>
+      <button class="nav-btn" id="my-events-button" data-url="my_events.html">
+        My Events
+      </button>
+      <button class="nav-btn" id="users-button" data-url="users.html">
+        Users
+      </button>
+      <h1 id="site-title">Event site</h1>
+      <input type="text" id="search-bar" placeholder="Search..." />
+      <button
+        class="nav-btn"
+        id="notification-button"
+        data-url="notifications.html"
+      >
+        Notifications
+      </button>
+      <button
+        class="nav-btn"
+        id="profile-button"
+        data-url="profile.html"
+      ></button>
+    </div>
+
+    <div class="invite-page-container">
+      <!-- Loading state -->
+      <div id="loading-spinner" class="loading-spinner">
+        <p>Loading...</p>
+      </div>
+
+      <!-- Error state -->
+      <div id="error-message" class="error-message" style="display: none">
+        <p>Failed to load invite page.</p>
+        <a href="index.html" class="btn-primary">Back to Events</a>
+      </div>
+
+      <!-- Main content -->
+      <div id="invite-content" class="invite-content" style="display: none">
+        <!-- Page Header -->
+        <div class="invite-header">
+          <div class="invite-header-content">
+            <!-- <h1>Event Created Successfully!</h1> -->
+            <h2 id="event-title">Event Title</h2>
+            <p>Would you like to invite people to your event?</p>
+          </div>
+        </div>
+
+        <!-- Invitation Section -->
+        <div class="invite-section">
+          <!-- Friends List - Primary Method -->
+          <div class="friends-container">
+            <div class="friends-header">
+              <h3>Invite Your Friends</h3>
+              <div class="friends-actions">
+                <button id="select-all-btn" class="btn-small">
+                  Select All
+                </button>
+                <button id="deselect-all-btn" class="btn-small">
+                  Deselect All
+                </button>
+              </div>
+            </div>
+
+            <div id="friends-list" class="friends-list">
+              <!-- Friends will be populated here -->
+              <div class="loading-friends">
+                <p>Loading your friends...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- User Search - Secondary Method -->
+          <div class="user-search-container">
+            <h3>Search for Others</h3>
+            <p class="search-help">
+              Can't find someone? Search by name or email:
+            </p>
+            <div class="search-input-container">
+              <input
+                type="text"
+                id="user-search"
+                placeholder="Type a name or email to search..."
+                autocomplete="off"
+              />
+              <div id="user-search-results" class="search-results"></div>
+            </div>
+          </div>
+
+          <!-- Selected Users -->
+          <div class="selected-users-container">
+            <h3>People to Invite (<span id="selected-count">0</span>)</h3>
+            <div id="selected-users-list" class="selected-users-list">
+              <div class="empty-state">
+                <p>No one selected yet.</p>
+                <p>Search above to find people to invite to your event.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="invite-actions">
+          <button id="send-invites-btn" class="btn-primary" disabled>
+            Send Invitations (<span id="invite-count">0</span>)
+          </button>
+          <button id="skip-invites-btn" class="btn-secondary">
+            Skip for Now
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="scripts/main.js"></script>
+  </body>
+</html>

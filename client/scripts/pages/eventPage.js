@@ -89,7 +89,6 @@ async function loadEventDetails() {
 function populateEventDetails(event) {
   // Update page title
   document.title = `${event.title} - Event App`;
-  console.log(event);
 
   // Event header
   document.getElementById("event-title").textContent = event.title;
@@ -114,6 +113,13 @@ function populateEventDetails(event) {
     editBtn.style.display = "block";
     editBtn.onclick = () => {
       window.location.href = `create_event.html?edit=${currentEvent.id}`;
+    };
+  }
+  const invBtn = document.getElementById("invite-btn");
+  if (invBtn && event.host_id === loggedInUser.userId) {
+    invBtn.style.display = "block";
+    invBtn.onclick = () => {
+      window.location.href = `invite_users.html?eventId=${currentEvent.id}`;
     };
   }
   // Event details

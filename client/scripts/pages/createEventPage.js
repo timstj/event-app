@@ -61,7 +61,7 @@ function checkEditMode() {
     loadEventForEditing(editingEventId);
 
     // Update page title
-    const pageTitle = document.querySelector("h1, h2");
+    const pageTitle = document.querySelector("h2");
     if (pageTitle) {
       pageTitle.textContent = "Edit Event";
     }
@@ -154,6 +154,8 @@ function setupEventForm() {
  * @private
  * @param {Event} event - Form submit event
  */
+
+// BUG: UPDATING LOCATION DOES NOT WORK. IT JUST SETS IT TO NULL. FIX
 async function handleFormSubmit(event) {
   event.preventDefault();
 
@@ -197,15 +199,21 @@ async function handleFormSubmit(event) {
     if (isEditMode) {
       result = await EventService.updateEvent(editingEventId, eventData);
       showSuccess("Event updated successfully!");
+
+      // Redirect to event page after finished editing
+      setTimeout(() => {
+        window.location.href = `event.html?id=${editingEventId}`;
+      }, 1000);
     } else {
       result = await EventService.createEvent(eventData);
       showSuccess("Event created successfully!");
-    }
 
-    // Redirect after success
-    setTimeout(() => {
-      window.location.href = "my_events.html";
-    }, 1500);
+      // Redirect after success
+      setTimeout(() => {
+        // CHECK!! ID OR EVENTID?
+        window.location.href = `invite_users.html?eventId=${result.id}`;
+      }, 1500);
+    }
   } catch (error) {
     console.error("Error saving event:", error);
     const action = isEditMode ? "update" : "create";
