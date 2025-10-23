@@ -28,7 +28,6 @@ export async function initUsersPage() {
   const currentPage = currentPath.split('/').pop() || '';
   
   if (currentPage !== "users.html") {
-    console.log("Not on users.html, skipping usersPage initialization");
     return;
   }
 

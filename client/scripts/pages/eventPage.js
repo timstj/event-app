@@ -174,6 +174,8 @@ function setupInvitationButtons() {
     statusText.className = `status-${currentInvitation.status}`;
   }
 
+  disableCurrentResponseButton();
+
   // Setup button event listeners
   document.getElementById("accept-btn").onclick = () =>
     updateInvitationStatus("accepted");
@@ -198,6 +200,44 @@ function hideInvitationButtons() {
 function showResponseButtons() {
   document.getElementById("invitation-buttons").style.display = "flex";
   document.getElementById("current-status").style.display = "none";
+
+  disableCurrentResponseButton();
+}
+
+/**
+ * ✅ NEW: Simple function to disable current response button
+ */
+function disableCurrentResponseButton() {
+  // Reset all buttons first
+  const acceptBtn = document.getElementById("accept-btn");
+  const maybeBtn = document.getElementById("maybe-btn");
+  const declineBtn = document.getElementById("decline-btn");
+  
+  // Enable all buttons and reset text
+  acceptBtn.disabled = false;
+  acceptBtn.style.display = "block";
+  maybeBtn.disabled = false;
+  maybeBtn.style.display = "block";
+  declineBtn.disabled = false;
+  declineBtn.style.display = "block";
+
+  // Disable the button matching current status
+  if (currentInvitation && currentInvitation.status !== "pending") {
+    switch (currentInvitation.status) {
+      case "accepted":
+        acceptBtn.disabled = true;
+        acceptBtn.style.display = "none";
+        break;
+      case "maybe":
+        maybeBtn.disabled = true;
+        maybeBtn.style.display = "none";
+        break;
+      case "declined":
+        declineBtn.disabled = true;
+        declineBtn.style.display = "none";
+        break;
+    }
+  }
 }
 
 /**
@@ -205,6 +245,13 @@ function showResponseButtons() {
  * @param {string} status - New status (accepted/maybe/declined)
  */
 async function updateInvitationStatus(status) {
+
+  // Simple check: prevent updating to same status
+  if (currentInvitation && currentInvitation.status === status) {
+    showError(`You have already ${status} this invitation`);
+    return;
+  }
+  
   const buttons = document.querySelectorAll("#invitation-buttons button");
 
   try {

@@ -121,11 +121,8 @@ async function loadFriendsList() {
   const friendsContainer = document.getElementById("friends-list");
 
   try {
-    console.log("Loading friends list...");
-
     // Load friends
     allFriends = await FriendService.getFriends(loggedInUser.userId);
-    console.log("Friends loaded:", allFriends);
 
     if (allFriends.length === 0) {
       friendsContainer.innerHTML = `
