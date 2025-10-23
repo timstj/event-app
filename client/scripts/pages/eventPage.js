@@ -247,11 +247,13 @@ async function loadEventAttendees(eventId) {
     const allAttendees = await EventService.getEventAttendees(eventId);
 
     // Separate by status
+    const pending = allAttendees.filter((a) => a.status === "pending")
     const accepted = allAttendees.filter((a) => a.status === "accepted");
     const maybe = allAttendees.filter((a) => a.status === "maybe");
     const declined = allAttendees.filter((a) => a.status === "declined");
 
     // Update counts
+    document.getElementById("invited-count").textContent = pending.length;
     document.getElementById("accepted-count").textContent = accepted.length;
     document.getElementById("maybe-count").textContent = maybe.length;
     document.getElementById("declined-count").textContent = declined.length;
@@ -263,6 +265,7 @@ async function loadEventAttendees(eventId) {
     ).textContent = `${maybe.length} maybe`;
 
     // Render attendee lists
+    renderAttendeeList("invited-attendees", pending);
     renderAttendeeList("accepted-attendees", accepted);
     renderAttendeeList("maybe-attendees", maybe);
     renderAttendeeList("declined-attendees", declined);
