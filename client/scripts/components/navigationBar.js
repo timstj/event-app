@@ -117,12 +117,15 @@ function updateProfileButton() {
  * @private
  */
 function getUserInitial(user) {
-  if (user.first_name) {
-    return user.first_name.charAt(0).toUpperCase();
+  if (user.first_name && user.last_name) {
+    const firstInitial = user.first_name.charAt(0).toUpperCase();
+    const lastInitial = user.last_name.charAt(0).toUpperCase();
+    return firstInitial + lastInitial;
   }
   if (user.email) {
     return user.email.charAt(0).toUpperCase();
   }
+  // Final fallback
   return 'U';
 }
 

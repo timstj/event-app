@@ -152,14 +152,6 @@ function setupEventActionListeners(actionsDiv, event) {
     });
   }
 
-  // Delete event
-  const deleteBtn = actionsDiv.querySelector(".btn-delete-event");
-  if (deleteBtn) {
-    deleteBtn.addEventListener("click", async () => {
-      await handleDeleteEvent(deleteBtn, event.id, event.title);
-    });
-  }
-
   // View details (for non-hosts)
   const viewBtn = actionsDiv.querySelector("#btn-view-details");
   if (viewBtn) {
@@ -167,38 +159,6 @@ function setupEventActionListeners(actionsDiv, event) {
       // Navigate to event details page
       window.location.href = `event.html?id=${event.id}`;
     });
-  }
-}
-
-/**
- * Handle deleting an event
- * @private
- */
-async function handleDeleteEvent(button, eventId, eventTitle) {
-  const confirmed = confirm(`Are you sure you want to delete "${eventTitle}"? This action cannot be undone.`);
-  
-  if (!confirmed) return;
-
-  const originalText = button.textContent;
-  
-  try {
-    button.textContent = "Deleting...";
-    button.disabled = true;
-
-    await EventService.deleteEvent(eventId);
-    
-    showSuccess(`Event "${eventTitle}" deleted successfully.`);
-
-    // Trigger refresh event
-    document.dispatchEvent(new CustomEvent('eventDeleted', { 
-      detail: { eventId } 
-    }));
-
-  } catch (error) {
-    console.error("Error deleting event:", error);
-    button.textContent = originalText;
-    button.disabled = false;
-    showError("Failed to delete event. Please try again.");
   }
 }
 

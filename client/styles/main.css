@@ -1,21 +1,68 @@
 :root {
   --main-color: white;
   --banner-color: red;
-  --button-color: #fbd46d;
-  --text-color: #222831;
+  --button-color: #4f8a8b;
+  --text-color: #d7dade;
 }
+
+/* DIFFERENT COLORS FOR BODY */
+
+/* body {
+  min-height: 100vh;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, 
+    #fce4ec 0%,     
+    #f8bbd9 25%,    
+    #e1bee7 75%,    
+    #f3e5f5 100%    
+  );
+  background-attachment: fixed;
+  margin: 0;
+} */
+
+/* body {
+  min-height: 100vh;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, 
+    #e3f2fd 0%,     
+    #f1f8e9 50%,    
+    #fff3e0 100%    
+  );
+  background-attachment: fixed;
+  margin: 0;
+} */
 
 body {
   min-height: 100vh;
   box-sizing: border-box;
   font-family: Arial, sans-serif;
-  background-color: rgb(233, 231, 212);
+  background: #f0f8f8;
   margin: 0;
 }
 
+/* body {
+  min-height: 100vh;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #e0f2f1 0%, #fce4ec 100%);
+  background-attachment: fixed;
+  margin: 0;
+} */
+
+/* body {
+  min-height: 100vh;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #b8e6e6 0%, #d4f1f1 50%, #e0f7f7 100%);
+  background-attachment: fixed;
+  margin: 0;
+} */
+
 .top-banner {
   /* TODO update to flexbox */
-  background: linear-gradient(90deg, #4f8a8b 0%, #f76b8a 50%);
+  background: linear-gradient(90deg, #98deff 0%, #67ccfb 50%);
   width: 100vw;
   margin: 0;
   height: 60px;
@@ -34,7 +81,9 @@ body {
 
 .top-banner button {
   background-color: var(--button-color); /* Example: white background */
-  color: black;
+  color: white;
+  font-size: small;
+  font-weight: bold;
   border: 0px; /* Example: red text */
 }
 
@@ -147,22 +196,22 @@ body {
   .dashboard-content {
     padding: 1rem 0.5rem;
   }
-  
+
   .upcoming-events-section,
   .my-events-section {
     padding: 1.5rem 1rem;
     margin-bottom: 2rem;
   }
-  
+
   .section-title {
     font-size: 1.5rem;
   }
-  
+
   .section-header {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .events-container {
     gap: 1rem;
   }
@@ -172,7 +221,7 @@ body {
   .section-title {
     font-size: 1.3rem;
   }
-  
+
   .upcoming-events-section,
   .my-events-section {
     padding: 1rem;
@@ -219,7 +268,11 @@ body {
 
 /* Friend Card Styles */
 .friend-card {
-  background: linear-gradient(135deg, rgba(79, 138, 139, 0.08), rgba(247, 107, 138, 0.08));
+  background: linear-gradient(
+    135deg,
+    rgba(79, 138, 139, 0.08),
+    rgba(247, 107, 138, 0.08)
+  );
   border: 2px solid rgba(79, 138, 139, 0.3);
   border-radius: 12px;
   padding: 1.5rem;
@@ -239,7 +292,11 @@ body {
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(79, 138, 139, 0.25);
   border-color: rgba(79, 138, 139, 0.5);
-  background: linear-gradient(135deg, rgba(79, 138, 139, 0.12), rgba(247, 107, 138, 0.12));
+  background: linear-gradient(
+    135deg,
+    rgba(79, 138, 139, 0.12),
+    rgba(247, 107, 138, 0.12)
+  );
 }
 
 .friend-info {
@@ -354,29 +411,29 @@ body {
     padding: 1.5rem;
     margin-bottom: 2rem;
   }
-  
+
   .my-friends-section h2 {
     font-size: 1.5rem;
   }
-  
+
   .friend-card {
     min-width: 250px;
     max-width: 100%;
     flex: 1 1 250px;
     padding: 1.25rem;
   }
-  
+
   .friend-actions {
     flex-direction: column;
     gap: 0.75rem;
   }
-  
+
   .btn-view-profile,
   .btn-remove-friend {
     width: 100%;
     min-width: auto;
   }
-  
+
   #friends-list {
     gap: 0.75rem;
   }
@@ -386,24 +443,24 @@ body {
   .my-friends-section {
     padding: 1rem;
   }
-  
+
   .my-friends-section h2 {
     font-size: 1.3rem;
   }
-  
+
   .friend-card {
     min-width: 220px;
     padding: 1rem;
   }
-  
+
   .friend-info h3 {
     font-size: 1.2rem;
   }
-  
+
   .friend-email {
     font-size: 0.85rem;
   }
-  
+
   .friends-empty-state {
     padding: 2rem 1rem;
     font-size: 0.95rem;
@@ -607,7 +664,6 @@ body {
   margin: 2rem 0;
 }
 
-
 #search-bar {
   margin-left: auto;
   margin-right: 30px;
@@ -627,13 +683,13 @@ body {
 }
 
 #profile-button {
-  margin-right: 20px;
-  padding: 20px;
+  margin-right: 30px;
+  width: 40px;
+  height: 40px;
   border: none;
   border-radius: 50%; /* Makes the button circular */
   cursor: pointer;
 }
-
 
 .activity-feed-section {
   display: flex;
@@ -667,7 +723,11 @@ body {
   justify-content: flex-start;
   min-height: 100vh;
   padding: 2rem 1rem;
-  background: linear-gradient(135deg, rgba(79, 138, 139, 0.1), rgba(247, 107, 138, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(79, 138, 139, 0.1),
+    rgba(247, 107, 138, 0.1)
+  );
 }
 
 .sign-up-container h2 {
@@ -773,11 +833,11 @@ body {
   .sign-up-container {
     padding: 1rem 0.5rem;
   }
-  
+
   .sign-up-container h2 {
     font-size: 2rem;
   }
-  
+
   .sign-up-container form {
     padding: 2rem 1.5rem;
     max-width: 350px;
@@ -788,12 +848,12 @@ body {
   .sign-up-container h2 {
     font-size: 1.8rem;
   }
-  
+
   .sign-up-container form {
     padding: 1.5rem 1rem;
     max-width: 300px;
   }
-  
+
   .sign-up-container input,
   .sign-up-container button {
     font-size: 0.95rem;
@@ -805,13 +865,13 @@ body {
   .user-page-content {
     padding: 1rem 0.5rem;
   }
-  
+
   .user-card,
   .request-card {
     min-width: 280px;
     max-width: 100%;
   }
-  
+
   .friend-requests-container,
   #user-list {
     gap: 0.5rem;
@@ -1006,11 +1066,21 @@ body {
   color: white;
 }
 
-.btn-join-event:hover:not(:disabled) { background-color: #45a049; }
-.btn-leave-event:hover:not(:disabled) { background-color: #f57400; }
-.btn-edit-event:hover:not(:disabled) { background-color: #1976d2; }
-.btn-delete-event:hover:not(:disabled) { background-color: #da190b; }
-.btn-view-details:hover:not(:disabled) { background-color: #7f7f7f; }
+.btn-join-event:hover:not(:disabled) {
+  background-color: #45a049;
+}
+.btn-leave-event:hover:not(:disabled) {
+  background-color: #f57400;
+}
+.btn-edit-event:hover:not(:disabled) {
+  background-color: #1976d2;
+}
+.btn-delete-event:hover:not(:disabled) {
+  background-color: #da190b;
+}
+.btn-view-details:hover:not(:disabled) {
+  background-color: #7f7f7f;
+}
 
 .event-actions button:disabled {
   opacity: 0.6;
@@ -1150,7 +1220,7 @@ body {
     margin: 1rem;
     padding: 1.5rem;
   }
-  
+
   .create-event-section h2 {
     font-size: 1.5rem;
   }
@@ -1441,41 +1511,41 @@ body {
     margin: 1rem auto;
     padding: 0 0.5rem;
   }
-  
+
   .profile-section {
     padding: 1.5rem;
   }
-  
+
   .profile-header {
     grid-template-columns: 1fr;
     text-align: center;
     gap: 1.5rem;
   }
-  
+
   .avatar-circle {
     width: 80px;
     height: 80px;
   }
-  
+
   #profile-initials {
     font-size: 2rem;
   }
-  
+
   .profile-info h1 {
     font-size: 1.5rem;
   }
-  
+
   .profile-actions {
     flex-direction: row;
     justify-content: center;
     flex-wrap: wrap;
   }
-  
+
   .profile-stats {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .form-actions {
     flex-direction: column;
   }
@@ -1485,16 +1555,16 @@ body {
   .profile-section {
     padding: 1rem;
   }
-  
+
   .avatar-circle {
     width: 70px;
     height: 70px;
   }
-  
+
   #profile-initials {
     font-size: 1.5rem;
   }
-  
+
   .stat-number {
     font-size: 2rem;
   }
@@ -1543,7 +1613,11 @@ body[data-page="event"] .error-message,
 
 /* Event Header - Scoped to event page */
 .event-page-container .event-header {
-  background: linear-gradient(135deg, rgba(79, 138, 139, 0.15), rgba(247, 107, 138, 0.15));
+  background: linear-gradient(
+    135deg,
+    rgba(79, 138, 139, 0.15),
+    rgba(247, 107, 138, 0.15)
+  );
   border-radius: 16px;
   padding: 2rem;
   margin-bottom: 2rem;
@@ -1940,32 +2014,32 @@ body[data-page="event"] .error-message,
   .event-page-container {
     padding: 1rem;
   }
-  
+
   .event-page-container .event-header {
     flex-direction: column;
     gap: 1.5rem;
     padding: 1.5rem;
   }
-  
+
   .event-page-container .event-header h1 {
     font-size: 2rem;
   }
-  
+
   .event-page-container .event-meta {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .event-page-container .event-actions {
     width: 100%;
     min-width: auto;
   }
-  
+
   .event-page-container .invitation-buttons {
     flex-direction: row;
     gap: 0.5rem;
   }
-  
+
   .event-page-container .btn-accept,
   .event-page-container .btn-maybe,
   .event-page-container .btn-decline {
@@ -1973,15 +2047,15 @@ body[data-page="event"] .error-message,
     font-size: 0.85rem;
     padding: 10px 8px;
   }
-  
+
   .event-page-container .event-info-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .event-page-container .attendees-section {
     padding: 1.5rem;
   }
-  
+
   .event-page-container .attendee-card {
     min-width: 180px;
     max-width: 100%;
@@ -1992,35 +2066,35 @@ body[data-page="event"] .error-message,
   .event-page-container {
     padding: 0.5rem;
   }
-  
+
   .event-page-container .event-header {
     padding: 1rem;
   }
-  
+
   .event-page-container .event-header h1 {
     font-size: 1.5rem;
   }
-  
+
   .event-page-container .event-description,
   .event-page-container .event-info-card,
   .event-page-container .attendees-section {
     padding: 1rem;
   }
-  
+
   .event-page-container .invitation-buttons {
     flex-direction: column;
   }
-  
+
   .event-page-container .btn-accept,
   .event-page-container .btn-maybe,
   .event-page-container .btn-decline {
     flex: none;
   }
-  
+
   .event-page-container .attendees-list {
     gap: 0.5rem;
   }
-  
+
   .event-page-container .attendee-card {
     min-width: 160px;
     padding: 0.75rem;
@@ -2029,9 +2103,15 @@ body[data-page="event"] .error-message,
 
 /* Animation for status changes - Event page only */
 @keyframes statusChange {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .event-page-container .current-status.status-updated {
@@ -2080,7 +2160,11 @@ body[data-page="event"] .error-message,
 
 /* Page Header */
 .invite-header {
-  background: linear-gradient(135deg, rgba(79, 138, 139, 0.15), rgba(247, 107, 138, 0.15));
+  background: linear-gradient(
+    135deg,
+    rgba(79, 138, 139, 0.15),
+    rgba(247, 107, 138, 0.15)
+  );
   border-radius: 16px;
   padding: 2.5rem;
   margin-bottom: 3rem;
@@ -2600,49 +2684,49 @@ body[data-page="event"] .error-message,
   .invite-page-container {
     padding: 1rem;
   }
-  
+
   .invite-header {
     padding: 2rem 1.5rem;
     margin-bottom: 2rem;
   }
-  
+
   .invite-header h1 {
     font-size: 2rem;
   }
-  
+
   .invite-header h2 {
     font-size: 1.5rem;
   }
-  
+
   .friends-container,
   .user-search-container,
   .selected-users-container {
     padding: 1.5rem;
   }
-  
+
   .friends-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .friends-actions {
     width: 100%;
     justify-content: center;
   }
-  
+
   .friend-item,
   .selected-user-card {
     min-width: 220px;
     max-width: 100%;
     flex: 1 1 220px;
   }
-  
+
   .invite-actions {
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   #send-invites-btn,
   #skip-invites-btn {
     width: 100%;
@@ -2655,45 +2739,45 @@ body[data-page="event"] .error-message,
   .invite-page-container {
     padding: 0.5rem;
   }
-  
+
   .invite-header {
     padding: 1.5rem 1rem;
   }
-  
+
   .invite-header h1 {
     font-size: 1.5rem;
   }
-  
+
   .invite-header h2 {
     font-size: 1.3rem;
   }
-  
+
   .friends-container,
   .user-search-container,
   .selected-users-container {
     padding: 1rem;
   }
-  
+
   .friend-item,
   .selected-user-card {
     min-width: 200px;
     padding: 0.75rem;
   }
-  
+
   .friends-list,
   .selected-users-list {
     gap: 0.75rem;
     padding: 0.75rem;
   }
-  
+
   .friend-checkbox-label {
     gap: 0.75rem;
   }
-  
+
   .friend-name {
     font-size: 0.95rem;
   }
-  
+
   .friend-email {
     font-size: 0.8rem;
   }
@@ -2718,7 +2802,13 @@ body[data-page="event"] .error-message,
 
 /* Pulse animation for loading */
 @keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
