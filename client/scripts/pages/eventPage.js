@@ -122,6 +122,12 @@ function populateEventDetails(event) {
       window.location.href = `invite_users.html?eventId=${currentEvent.id}`;
     };
   }
+  // Delete event button
+  const delBtn = document.getElementById("delete-btn");
+  if (delBtn && event.host_id === loggedInUser.userId) {
+    delBtn.style.display = "block";
+    delBtn.addEventListener("click", () => handleDeleteEvent(event));
+  }
   // Event details
   document.getElementById("event-description-text").textContent =
     event.description || "No description provided.";
@@ -187,6 +193,39 @@ function setupInvitationButtons() {
 }
 
 /**
+ * Handle deleting an event
+ * @private
+ */
+async function handleDeleteEvent(eventData) {
+  const confirmed = confirm(
+    `Are you sure you want to delete "${eventData.title}"? This action cannot be undone.`
+  );
+
+  if (!confirmed) return;
+
+  const delBtn = document.getElementById("delete-btn");
+  const originalText = delBtn.textContent;
+
+  try {
+    delBtn.textContent = "Deleting...";
+    delBtn.disabled = true;
+
+    await EventService.deleteEvent(eventData.id);
+
+    showSuccess(`Event "${eventData.title}" deleted successfully.`);
+
+    // Redirect to home page after success
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 1000);
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    delBtn.textContent = originalText;
+    delBtn.disabled = false;
+    showError("Failed to delete event. Please try again.");
+  }
+}
+/**
  * Hide invitation buttons (user not invited)
  */
 function hideInvitationButtons() {
@@ -212,7 +251,7 @@ function disableCurrentResponseButton() {
   const acceptBtn = document.getElementById("accept-btn");
   const maybeBtn = document.getElementById("maybe-btn");
   const declineBtn = document.getElementById("decline-btn");
-  
+
   // Enable all buttons and reset text
   acceptBtn.disabled = false;
   acceptBtn.style.display = "block";
@@ -245,13 +284,12 @@ function disableCurrentResponseButton() {
  * @param {string} status - New status (accepted/maybe/declined)
  */
 async function updateInvitationStatus(status) {
-
   // Simple check: prevent updating to same status
   if (currentInvitation && currentInvitation.status === status) {
     showError(`You have already ${status} this invitation`);
     return;
   }
-  
+
   const buttons = document.querySelectorAll("#invitation-buttons button");
 
   try {
@@ -294,7 +332,7 @@ async function loadEventAttendees(eventId) {
     const allAttendees = await EventService.getEventAttendees(eventId);
 
     // Separate by status
-    const pending = allAttendees.filter((a) => a.status === "pending")
+    const pending = allAttendees.filter((a) => a.status === "pending");
     const accepted = allAttendees.filter((a) => a.status === "accepted");
     const maybe = allAttendees.filter((a) => a.status === "maybe");
     const declined = allAttendees.filter((a) => a.status === "declined");

@@ -119,20 +119,14 @@ function createEventActions(event) {
   if (isHost) {
     // Host can edit/delete and manage invites
     actionsDiv.innerHTML = `
-      <button class="btn-edit-event" data-event-id="${event.id}">
-        Edit Event
-      </button>
-      <button class="btn-manage-invites" data-event-id="${event.id}">
-        Manage Invites
-      </button>
-      <button class="btn-delete-event" data-event-id="${event.id}">
-        Delete Event
+      <button class="btn-primary" id="btn-manage-event" data-event-id="${event.id}">
+        Manage Event
       </button>
     `;
   } else {
     // Non-hosts can only view details
     actionsDiv.innerHTML = `
-      <button class="btn-view-details" data-event-id="${event.id}">
+      <button class="btn-secondary" id="btn-view-details" data-event-id="${event.id}">
         View Details
       </button>
     `;
@@ -149,16 +143,8 @@ function createEventActions(event) {
  * @private
  */
 function setupEventActionListeners(actionsDiv, event) {
-  // Edit event
-  const editBtn = actionsDiv.querySelector(".btn-edit-event");
-  if (editBtn) {
-    editBtn.addEventListener("click", () => {
-      window.location.href = `create_event.html?edit=${event.id}`;
-    });
-  }
-
-  // Manage invites
-  const manageBtn = actionsDiv.querySelector(".btn-manage-invites");
+  // Manage event (for host)
+  const manageBtn = actionsDiv.querySelector("#btn-manage-event");
   if (manageBtn) {
     manageBtn.addEventListener("click", () => {
       // Navigate to invite management page or open modal
@@ -174,8 +160,8 @@ function setupEventActionListeners(actionsDiv, event) {
     });
   }
 
-  // View details
-  const viewBtn = actionsDiv.querySelector(".btn-view-details");
+  // View details (for non-hosts)
+  const viewBtn = actionsDiv.querySelector("#btn-view-details");
   if (viewBtn) {
     viewBtn.addEventListener("click", () => {
       // Navigate to event details page

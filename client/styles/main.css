@@ -966,7 +966,8 @@ body {
 .btn-leave-event,
 .btn-edit-event,
 .btn-manage-invites,
-.btn-delete-event {
+.btn-delete-event,
+.btn-view-details {
   padding: 8px 16px;
   border: none;
   border-radius: 5px;
@@ -990,6 +991,11 @@ body {
   color: white;
 }
 
+.btn-view-details {
+  background-color: #333;
+  color: white;
+}
+
 .btn-manage-invites {
   background-color: #2a461c;
   color: white;
@@ -1004,6 +1010,7 @@ body {
 .btn-leave-event:hover:not(:disabled) { background-color: #f57400; }
 .btn-edit-event:hover:not(:disabled) { background-color: #1976d2; }
 .btn-delete-event:hover:not(:disabled) { background-color: #da190b; }
+.btn-view-details:hover:not(:disabled) { background-color: #7f7f7f; }
 
 .event-actions button:disabled {
   opacity: 0.6;
@@ -1751,7 +1758,24 @@ body[data-page="event"] .error-message,
 }
 
 .event-page-container .btn-inv:hover {
-  background: #4f8a8b;
+  background: #8b654f;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.event-page-container .btn-del {
+  background: transparent;
+  color: #ed4f41;
+  border: 2px solid #ed4f41;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.event-page-container .btn-del:hover {
+  background: #ed4f41;
   color: white;
   transform: translateY(-1px);
 }
