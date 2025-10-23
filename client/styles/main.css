@@ -2537,6 +2537,40 @@ body[data-page="event"] .error-message,
   box-shadow: 0 4px 12px rgba(102, 102, 102, 0.3);
 }
 
+/* Already invited friend styling */
+.friend-item.already-invited {
+  background: rgba(200, 200, 200, 0.3);
+  border-color: rgba(200, 200, 200, 0.5);
+  opacity: 0.7;
+}
+
+.friend-item.already-invited:hover {
+  border-color: rgba(200, 200, 200, 0.5);
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.friend-item.already-invited .friend-checkbox-label {
+  cursor: not-allowed;
+}
+
+.friend-item.already-invited .friend-checkbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.invitation-status {
+  color: #4caf50;
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-top: 0.25rem;
+}
+
+.friend-item.already-invited .friend-name,
+.friend-item.already-invited .friend-email {
+  color: #999;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .invite-page-container {

@@ -4,7 +4,6 @@
  * TODO: Update security, such as XSS.
  */
 
-import { UserService } from "../services/userService.js";
 import { FriendService } from "../services/friendService.js";
 import { EventService } from "../services/eventService.js";
 import { getLoggedInUser } from "../auth/authUtils.js";
@@ -15,6 +14,7 @@ let currentEventTitle = "";
 let loggedInUser = null;
 let allFriends = [];
 let selectedUsers = [];
+let existingInvitations = [];
 
 /**
  * Initialize invite users page
@@ -62,9 +62,6 @@ async function loadPageData() {
     // CHECK: Dont think this will be used
     currentEventTitle = urlParams.get("eventTitle") || "Your event";
 
-    console.log("Event ID:", currentEventId);
-    console.log("Event title:", currentEventTitle);
-
     if (!currentEventId) {
       throw new Error("No event ID provided");
     }
@@ -82,7 +79,9 @@ async function loadPageData() {
       currentEventTitle
     )} - Event App`;
 
-    // Load friends list
+    // Load friends list and exisiting invitations seperate to avoid race conditions
+    await loadExistingInvitations();
+
     await loadFriendsList();
 
     // To show invite content
@@ -94,6 +93,25 @@ async function loadPageData() {
     errorMessage.style.display = "block";
     showError("Failed to load invite page");
   }
+}
+
+/**
+ * Load existing invitations for this event
+ */
+async function loadExistingInvitations() {
+  try {
+    existingInvitations = await EventService.getEventAttendees(currentEventId);
+  } catch (error) {
+    console.error("Error loading existing invitations:", error);
+    existingInvitations = [];
+  }
+}
+
+/**
+ * Check if user is already invited
+ */
+function isUserAlreadyInvited(userId) {
+  return existingInvitations.some((invitation) => invitation.id === userId);
 }
 
 /**
@@ -151,8 +169,12 @@ function renderFriendsList() {
       const safeName = escapeHtml(`${friend.first_name} ${friend.last_name}`);
       const safeEmail = escapeHtml(friend.email);
 
+      const alreadyInvited = isUserAlreadyInvited(friend.id);
+
       return `
-      <div class="friend-item" data-user-id="${friend.id}">
+      <div class="friend-item ${
+        alreadyInvited ? "already-invited" : ""
+      }" data-user-id="${friend.id}">
         <label class="friend-checkbox-label">
           <input 
             type="checkbox" 
@@ -161,10 +183,16 @@ function renderFriendsList() {
             data-first-name="${escapeHtml(friend.first_name)}"
             data-last-name="${escapeHtml(friend.last_name)}"
             data-email="${safeEmail}"
+            ${alreadyInvited ? "disabled" : ""}
           />
           <div class="friend-info">
             <div class="friend-name">${safeName}</div>
             <div class="friend-email">${safeEmail}</div>
+            ${
+              alreadyInvited
+                ? '<div class="invitation-status"> Already invited</div>'
+                : ""
+            }
           </div>
         </label>
       </div>
@@ -179,6 +207,12 @@ function renderFriendsList() {
  * Toggle friend selection
  */
 window.toggleFriendSelection = function (userId, firstName, lastName, email) {
+  // Check if already invited
+  if (isUserAlreadyInvited(userId)) {
+    showError("This person has already been invited to this event");
+    return;
+  }
+
   const checkbox = document.querySelector(`input[value="${userId}"]`);
   const isSelected = checkbox.checked;
 
