@@ -248,20 +248,9 @@ function setupFriendEventDelegation() {
       const email = checkbox.dataset.email;
       const isSelected = checkbox.checked;
 
-      console.log("Checkbox data:", {
-        value: checkbox.value,
-        firstName: checkbox.dataset.firstName,
-        lastName: checkbox.dataset.lastName,
-        email: checkbox.dataset.email,
-        checked: checkbox.checked,
-      });
-
-      
-
       // Check if already invited
       if (isUserAlreadyInvited(friendId)) {
         checkbox.checked = false;
-        showError("This person has already been invited to this event");
         return;
       }
       if (isSelected) {
