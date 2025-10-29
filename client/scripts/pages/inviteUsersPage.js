@@ -200,37 +200,37 @@ function renderFriendsList() {
   friendsContainer.innerHTML = friendsHTML;
 }
 
-/**
- * Toggle friend selection
- */
-window.toggleFriendSelection = function (userId, firstName, lastName, email) {
-  // Check if already invited
-  if (isUserAlreadyInvited(userId)) {
-    showError("This person has already been invited to this event");
-    return;
-  }
+// /**
+//  * Toggle friend selection
+//  */
+// window.toggleFriendSelection = function (userId, firstName, lastName, email) {
+//   // Check if already invited
+//   if (isUserAlreadyInvited(userId)) {
+//     showError("This person has already been invited to this event");
+//     return;
+//   }
 
-  const checkbox = document.querySelector(`input[value="${userId}"]`);
-  const isSelected = checkbox.checked;
+//   const checkbox = document.querySelector(`input[value="${userId}"]`);
+//   const isSelected = checkbox.checked;
 
-  if (isSelected) {
-    // Add to selected users
-    if (!selectedUsers.find((u) => u.id === userId)) {
-      selectedUsers.push({
-        id: userId,
-        first_name: firstName,
-        last_name: lastName,
-        email: email,
-        source: "friends",
-      });
-    }
-  } else {
-    // Remove from selected users
-    selectedUsers = selectedUsers.filter((u) => u.id !== userId);
-  }
+//   if (isSelected) {
+//     // Add to selected users
+//     if (!selectedUsers.find((u) => u.id === userId)) {
+//       selectedUsers.push({
+//         id: userId,
+//         first_name: firstName,
+//         last_name: lastName,
+//         email: email,
+//         source: "friends",
+//       });
+//     }
+//   } else {
+//     // Remove from selected users
+//     selectedUsers = selectedUsers.filter((u) => u.id !== userId);
+//   }
 
-  updateSelectedUsersDisplay();
-};
+//   updateSelectedUsersDisplay();
+// };
 
 /**
  * Setup event delegation for friend checkboxes
@@ -246,8 +246,41 @@ function setupFriendEventDelegation() {
       const firstName = checkbox.dataset.firstName;
       const lastName = checkbox.dataset.lastName;
       const email = checkbox.dataset.email;
+      const isSelected = checkbox.checked;
 
-      toggleFriendSelection(friendId, firstName, lastName, email);
+      console.log("Checkbox data:", {
+        value: checkbox.value,
+        firstName: checkbox.dataset.firstName,
+        lastName: checkbox.dataset.lastName,
+        email: checkbox.dataset.email,
+        checked: checkbox.checked,
+      });
+
+      
+
+      // Check if already invited
+      if (isUserAlreadyInvited(friendId)) {
+        checkbox.checked = false;
+        showError("This person has already been invited to this event");
+        return;
+      }
+      if (isSelected) {
+        // Add to selected users
+        if (!selectedUsers.find((u) => u.id === friendId)) {
+          selectedUsers.push({
+            id: friendId,
+            first_name: firstName,
+            last_name: lastName,
+            email: email,
+            source: "friends",
+          });
+        }
+      } else {
+        // Remove from selected users
+        selectedUsers = selectedUsers.filter((u) => u.id !== friendId);
+      }
+
+      updateSelectedUsersDisplay();
     }
   });
 }
@@ -310,7 +343,8 @@ function selectAllFriends() {
   checkboxes.forEach((checkbox) => {
     if (!checkbox.checked) {
       checkbox.checked = true;
-      checkbox.dispatchEvent(new Event("change"));
+      // Need the bubbles since the event listner is attached to the parent container
+      checkbox.dispatchEvent(new Event("change", { bubbles: true }));
     }
   });
 }
@@ -323,7 +357,7 @@ function deselectAllFriends() {
   checkboxes.forEach((checkbox) => {
     if (checkbox.checked) {
       checkbox.checked = false;
-      checkbox.dispatchEvent(new Event("change"));
+      checkbox.dispatchEvent(new Event("change", { bubbles: true }));
     }
   });
 }
