@@ -228,7 +228,7 @@ async function handleFriendRequestSent() {
 async function handleFriendRequestHandled() {
   try {
     // Refresh both friendships and incoming requests
-    await Promise.all([refreshFriendshipsData(), loadIncomingRequests()]);
+    await Promise.all([refreshFriendshipsData(), loadIncomingRequests(), loadAndDisplayFriends()]);
   } catch (error) {
     console.error("Error refreshing after friend request action:", error);
   }
