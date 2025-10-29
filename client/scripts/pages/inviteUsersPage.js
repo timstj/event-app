@@ -59,8 +59,6 @@ async function loadPageData() {
   try {
     const urlParams = new URLSearchParams(window.location.search);
     currentEventId = urlParams.get("eventId");
-    // CHECK: Dont think this will be used
-    currentEventTitle = urlParams.get("eventTitle") || "Your event";
 
     if (!currentEventId) {
       throw new Error("No event ID provided");
@@ -71,18 +69,16 @@ async function loadPageData() {
     errorMessage.style.display = "none";
     inviteContent.style.display = "none";
 
-    // Set the event title
-    // CHECK: eventTitle
-    document.getElementById("event-title").textContent =
-      decodeURIComponent(currentEventTitle);
-    document.title = `Invite People to ${decodeURIComponent(
-      currentEventTitle
-    )} - Event App`;
-
+    // Load event details to extract event title
+    await loadEventDetails();
     // Load friends list and exisiting invitations seperate to avoid race conditions
     await loadExistingInvitations();
 
     await loadFriendsList();
+
+    // Set the event title
+    document.getElementById("event-title").textContent = currentEventTitle;
+    document.title = `Invite People to ${currentEventTitle} - Event App`;
 
     // To show invite content
     loadingSpinner.style.display = "none";
@@ -104,6 +100,22 @@ async function loadExistingInvitations() {
   } catch (error) {
     console.error("Error loading existing invitations:", error);
     existingInvitations = [];
+  }
+}
+
+/**
+ * Load event info from API
+ */
+async function loadEventDetails() {
+  try {
+    const event = await EventService.getEventById(currentEventId);
+
+    // Set currentEventTitle
+    currentEventTitle = event.title;
+  } catch (error) {
+    console.error("Error loading event detail", error);
+    currentEventTitle = "Your event";
+    showError("Failed to load event title");
   }
 }
 
