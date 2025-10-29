@@ -72,9 +72,9 @@ export const createEvent = async (req, res, next) => {
 
 export const updateEvent = async (req, res, next) => {
   const { id } = req.params;
-  const { title, description, date } = req.body;
+  const { title, description, date, location } = req.body;
   try {
-    const updatedEvent = await updateEventService(id, title, description, date);
+    const updatedEvent = await updateEventService(id, title, description, date, location);
     handleResponse(res, 200, "Event updated successfully", updatedEvent);
   } catch (error) {
     next(error);
