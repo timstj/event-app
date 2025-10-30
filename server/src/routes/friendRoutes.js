@@ -6,6 +6,7 @@ import {
   getAllFriends,
   getFriendships,
   getIncomingFriendRequests,
+  getOutgoingFriendRequests,
   sendFriendRequest,
 } from "../controllers/friendController.js";
 
@@ -20,6 +21,8 @@ router.post("/friend-request", sendFriendRequest);
 router.get("/friendships/:userId", getFriendships);
 
 router.get("/requests/incoming/:userId", getIncomingFriendRequests);
+
+router.get("/requests/outgoing/:userId", getOutgoingFriendRequests);
 
 router.get("/all/:userId", getAllFriends);
 

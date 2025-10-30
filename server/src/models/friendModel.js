@@ -84,3 +84,15 @@ export const getIncomingFriendRequestsService = async (userId) => {
   );
   return result.rows;
 };
+
+// Fetch outgoing friend requests where the logged-in user is the sender.
+export const getOutgoingRequestsService = async (userId) => {
+  const result = await pool.query(
+    `SELECT f.*, u.first_name, u.last_name, u.email, u.slug
+    FROM friends f
+    JOIN users u on u.id = f.friend_id
+    WHERE f.user_id = $1 and f.status = 'pending'`,
+    [userId]
+  );
+  return result.rows;
+};

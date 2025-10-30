@@ -6,6 +6,7 @@ import {
   declineFriendRequestService,
   getFriendshipsService,
   getIncomingFriendRequestsService,
+  getOutgoingRequestsService,
 } from "../models/friendModel.js";
 
 const handleResponse = (res, status, message, data = null) => {
@@ -99,6 +100,16 @@ export const getIncomingFriendRequests = async (req, res, next) => {
   try {
     const requests = await getIncomingFriendRequestsService(userId);
     handleResponse(res, 200, "Friend request retrieved", requests);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getOutgoingFriendRequests = async (req, res, next) => {
+  const { userId } = req.params;
+  try {
+    const requests = await getOutgoingRequestsService(userId);
+    handleResponse(res, 200, "Sent friend request retrieved", requests);
   } catch (error) {
     next(error);
   }
