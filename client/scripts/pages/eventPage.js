@@ -244,7 +244,7 @@ function showResponseButtons() {
 }
 
 /**
- * ✅ NEW: Simple function to disable current response button
+ * Simple function to disable current response button
  */
 function disableCurrentResponseButton() {
   // Reset all buttons first

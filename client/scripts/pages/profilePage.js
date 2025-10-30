@@ -159,7 +159,7 @@ function populateProfileDisplay(userData, profileInfo) {
   }
 
   toggleProfileActions(profileInfo.isOwnProfile);
-  // Update profile stats (placeholder values - you can load real data)
+  // Update profile stats
   updateProfileStats();
 }
 
@@ -220,16 +220,17 @@ function generateInitials(nameOrEmail) {
 }
 
 /**
- * Update profile statistics
+ * TODO: Implement this
+ * Update profile statistics.
  * @private
  */
 function updateProfileStats() {
-  // These would be real API calls in a full implementation
+  
   const eventsCountElement = document.getElementById("user-events-count");
   const upcomingCountElement = document.getElementById("user-upcoming-count");
   const invitesCountElement = document.getElementById("user-invites-count");
 
-  // Placeholder values - replace with real data
+  // Placeholder values
   if (eventsCountElement) eventsCountElement.textContent = "0";
   if (upcomingCountElement) upcomingCountElement.textContent = "0";
   if (invitesCountElement) invitesCountElement.textContent = "0";
@@ -413,7 +414,7 @@ function handleLogout() {
  */
 function showChangePasswordModal() {
   // This would open a modal or navigate to a change password page
-  showError("Change password functionality coming soon!");
+  showError("Implement this");
 }
 
 /**
@@ -422,7 +423,7 @@ function showChangePasswordModal() {
  */
 function showMessageModal() {
   // This would open a modal or navigate to a change password page
-  showError("Message functionality coming soon!");
+  showError("Might implement?");
 }
 
 /**
