@@ -342,7 +342,6 @@ function createFriendshipActions(statusObj, otherUserId) {
   if (!container) {
     return;
   }
-  console.log(statusObj);
   const { status, data } = statusObj;
 
   switch (status) {
