@@ -589,11 +589,17 @@ body {
   flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
-  padding: 0 1rem;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(79, 138, 139, 0.1);
 }
 
 .user-card {
-  background: #fff;
+  background: #f0f8f8;
   border: 2px solid #4f8a8b;
   border-radius: 12px;
   padding: 1rem;
