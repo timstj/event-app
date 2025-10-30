@@ -55,6 +55,21 @@ export class FriendService {
   }
 
   /**
+   * Get outgoing friend requests for a user
+   * @param {number} userId - User ID
+   * @returns {Promise<Array>} - Array of outgoing friend requests
+   */
+  static async getOutgoingRequests(userId) {
+    try {
+      const result = await apiGet(`${API_BASE_URL}/friends/requests/outgoing/${userId}`);
+      return result.data || [];
+    } catch (error) {
+      console.error("Error fetching outgoing requests", error);
+      throw new Error("Failed to load friend requests");
+    }
+  }
+
+  /**
    * Send a friend request
    * @param {number} userId - Sender's user ID
    * @param {number} friendId - Receiver's user ID
