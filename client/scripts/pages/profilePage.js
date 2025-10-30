@@ -36,12 +36,9 @@ export async function initProfilePage() {
 
     // Determine which profile to load
     const profileToLoad = determineProfileToLoad();
-
+    setupEventListeners(profileToLoad);
     // Load user profile data
     await loadProfileData(profileToLoad);
-
-    // Setup page interactions
-    setupEventListeners(profileToLoad);
   } catch (error) {
     console.error("Error initializing profile page:", error);
     showError("Failed to load profile. Please refresh.");
@@ -118,7 +115,7 @@ async function loadProfileData(profileInfo) {
  * @private
  * @param {object} userData - User data object
  */
-function populateProfileDisplay(userData, profileInfo) {
+async function populateProfileDisplay(userData, profileInfo) {
   // Basic info
   const nameElement = document.getElementById("profile-name");
   const emailElement = document.getElementById("profile-email");
@@ -148,7 +145,6 @@ function populateProfileDisplay(userData, profileInfo) {
   }
 
   if (profileInfo.isOwnProfile) {
-    // Only populate form fields for editing if its own profile
     const firstNameInput = document.getElementById("edit-first-name");
     const lastNameInput = document.getElementById("edit-last-name");
     const emailInput = document.getElementById("edit-email");
@@ -158,8 +154,9 @@ function populateProfileDisplay(userData, profileInfo) {
     if (emailInput) emailInput.value = userData.email || "";
   }
 
-  toggleProfileActions(profileInfo.isOwnProfile);
-  // Update profile stats
+  // FIX: Pass userData.id to toggleProfileActions
+  await toggleProfileActions(profileInfo.isOwnProfile, userData.id);
+
   updateProfileStats();
 }
 
@@ -168,38 +165,60 @@ function populateProfileDisplay(userData, profileInfo) {
  * @private
  * @param {boolean} isOwnProfile - Whether viewing own profile
  */
-function toggleProfileActions(isOwnProfile) {
+async function toggleProfileActions(isOwnProfile, otherUserId = null) {
   // Profile management buttons (only for own profile)
-  const editBtn = document.getElementById("edit-profile-btn");
-  const changePasswordBtn = document.getElementById("change-password-btn");
-  const logoutBtn = document.getElementById("logout-btn");
-
-  // Social interaction buttons (only for other profiles)
-  const sendFriendRequestBtn = document.getElementById(
-    "send-friend-request-btn"
-  );
-
-  // Not implemented messages yet
-  const messageBtn = document.getElementById("message-btn");
+  const container = document.getElementById("profile-actions");
+  if (!container) return;
 
   if (isOwnProfile) {
-    // Show own profile actions
-    if (editBtn) editBtn.style.display = "block";
-    if (changePasswordBtn) changePasswordBtn.style.display = "block";
-    if (logoutBtn) logoutBtn.style.display = "block";
+    // Show own profile actions (edit, logout, password)
+    container.innerHTML = `
+      <div class="own-profile-actions">
+        <button id="edit-profile-btn" class="btn-primary">
+          Edit Profile
+        </button>
+        <button id="change-password-btn" class="btn-secondary">
+          Change Password
+        </button>
+        <button id="logout-btn" class="btn-danger">
+          Sign Out
+        </button>
+      </div>
+    `;
 
-    // Hide social actions
-    if (sendFriendRequestBtn) sendFriendRequestBtn.style.display = "none";
-    if (messageBtn) messageBtn.style.display = "none";
+    const editBtn = document.getElementById("edit-profile-btn");
+    const changePasswordBtn = document.getElementById("change-password-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+
+    if (editBtn) {
+      editBtn.addEventListener("click", toggleEditMode);
+    }
+    if (changePasswordBtn) {
+      changePasswordBtn.addEventListener("click", showChangePasswordModal);
+    }
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", handleLogout);
+    }
   } else {
-    // Hide own profile actions
-    if (editBtn) editBtn.style.display = "none";
-    if (changePasswordBtn) changePasswordBtn.style.display = "none";
-    if (logoutBtn) logoutBtn.style.display = "none";
-
-    // Show social actions
-    if (sendFriendRequestBtn) sendFriendRequestBtn.style.display = "block";
-    if (messageBtn) messageBtn.style.display = "block";
+    try {
+      await loadAndCreateFriendshipActions(otherUserId);
+    } catch (error) {
+      console.error("Error loading friendship", error);
+    }
+  }
+}
+function setupEventListeners(profileInfo) {
+  if (profileInfo.isOwnProfile) {
+    // Save profile button
+    const saveBtn = document.getElementById("save-profile-btn");
+    if (saveBtn) {
+      saveBtn.addEventListener("click", saveProfileChanges);
+    }
+    // Cancel edit button
+    const cancelBtn = document.getElementById("cancel-edit-btn");
+    if (cancelBtn) {
+      cancelBtn.addEventListener("click", cancelEditMode);
+    }
   }
 }
 
@@ -225,7 +244,6 @@ function generateInitials(nameOrEmail) {
  * @private
  */
 function updateProfileStats() {
-  
   const eventsCountElement = document.getElementById("user-events-count");
   const upcomingCountElement = document.getElementById("user-upcoming-count");
   const invitesCountElement = document.getElementById("user-invites-count");
@@ -237,52 +255,193 @@ function updateProfileStats() {
 }
 
 /**
- * Setup event listeners for profile interactions
+ * Load friendship status and create appropriate actions
  * @private
  */
-function setupEventListeners(profileInfo) {
-  if (profileInfo.isOwnProfile) {
-    // Edit profile button (note the correct ID)
-    const editBtn = document.getElementById("edit-profile-btn");
-    if (editBtn) {
-      editBtn.addEventListener("click", toggleEditMode);
+async function loadAndCreateFriendshipActions(otherUserId) {
+  const container = document.getElementById("profile-actions");
+  if (!container) return;
+
+  try {
+    // Show loading state
+    container.innerHTML = `
+      <div class="loading-actions">
+        <span>Loading...</span>
+      </div>
+    `;
+
+    // Get friendship status
+    const status = await getFriendshipStatus(otherUserId);
+
+    // Create button based on status
+    createFriendshipActions(status, otherUserId);
+  } catch (error) {
+    console.error("Error loading friendship status", error);
+    // Fallback to basic add friend
+    createFriendshipActions({ status: "none" }, otherUserId);
+  }
+}
+
+/**
+ * Get friendship status between current user and other user
+ * @private
+ */
+async function getFriendshipStatus(otherUserId) {
+  try {
+    const [friendships, incomingRequests, outgoingRequests] = await Promise.all(
+      [
+        FriendService.getFriendships(currentUser.userId),
+        FriendService.getIncomingRequests(currentUser.userId),
+        FriendService.getOutgoingRequests(currentUser.userId),
+      ]
+    );
+
+    // Check if already friends
+    const friendship = friendships.find(
+      (f) =>
+        (f.user_id === currentUser.userId && f.friend_id === otherUserId) ||
+        (f.user_id === otherUserId && f.friend_id === currentUser.userId)
+    );
+
+    if (friendship && friendship.status === "accepted") {
+      return { status: "friends", data: friendship };
     }
 
-    // Save profile button
-    const saveBtn = document.getElementById("save-profile-btn");
-    if (saveBtn) {
-      saveBtn.addEventListener("click", saveProfileChanges);
+    if (friendship && friendship.status === "declined") {
+      return { status: "declined", data: friendship};
     }
 
-    // Cancel edit button
-    const cancelBtn = document.getElementById("cancel-edit-btn");
-    if (cancelBtn) {
-      cancelBtn.addEventListener("click", cancelEditMode);
+    // Check for outgoing request
+    const sentRequest = outgoingRequests.find(
+      (r) => r.friend_id === otherUserId
+    );
+    if (sentRequest) {
+      return { status: "pending_sent", data: sentRequest };
     }
 
-    // Logout button
-    const logoutBtn = document.getElementById("logout-btn");
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", handleLogout);
+    const receivedRequest = incomingRequests.find(
+      (r) => r.user_id === otherUserId
+    );
+    if (receivedRequest) {
+      return { status: "pending_received", data: receivedRequest };
     }
 
-    // Change password button (Not implemented yet)
-    const changePasswordBtn = document.getElementById("change-password-btn");
-    if (changePasswordBtn) {
-      changePasswordBtn.addEventListener("click", showChangePasswordModal);
-    }
-  } else {
-    // Other profile buttons (NEED TO FIX HANDLE SEND FRIEND REQUEST)
-    const friendRequestBtn = document.getElementById("send-friend-request-btn");
-    if (friendRequestBtn) {
-      friendRequestBtn.addEventListener("click", handleSendFriendRequest);
-    }
+    return { status: "none" };
+  } catch (error) {
+    console.error("Error getting friendship status:", error);
+    throw new Error(error);
+  }
+}
 
-    // Not implemented yet!!
-    const messageBtn = document.getElementById("message-btn");
-    if (messageBtn) {
-      messageBtn.addEventListener("click", showMessageModal);
-    }
+/**
+ * Create friendship action buttons based on status
+ * @private
+ */
+function createFriendshipActions(statusObj, otherUserId) {
+  const container = document.getElementById("profile-actions");
+  if (!container) {
+    return;
+  }
+  console.log(statusObj);
+  const { status, data } = statusObj;
+
+  switch (status) {
+    case "friends":
+      container.innerHTML = `
+        <div class="friendship-actions friends-state">
+          <div class="status-badge friends">
+            Friends
+          </div>
+          <button id="unfriend-btn" class="btn-danger btn-sm">
+            Remove Friend
+          </button>
+        </div>
+      `;
+      const unfriendBtn = document.getElementById("unfriend-btn");
+      if (unfriendBtn) {
+        unfriendBtn.addEventListener("click", () =>
+          handleUnfriend(otherUserId)
+        );
+      }
+      break;
+
+    case "pending_sent":
+      container.innerHTML = `
+        <div class="friendship-actions pending-state">
+          <div class="status-badge pending">
+            Friend Request Sent
+          </div>
+          <button id="cancel-request-btn" class="btn-secondary btn-sm">
+            Cancel Request
+          </button>
+        </div>
+      `;
+      const cancelBtn = document.getElementById("cancel-request-btn");
+      if (cancelBtn) {
+        cancelBtn.addEventListener("click", () =>
+          //CHECK!!
+          handleCancelRequest(data.user_id, data.friend_id)
+        );
+      }
+      break;
+
+    case "pending_received":
+      container.innerHTML = `
+        <div class="friendship-actions received-state">
+          <div class="status-badge received">
+            Wants to Be Friends
+          </div>
+          <div class="action-buttons">
+            <button id="accept-request-btn" class="btn-primary btn-sm">
+              Accept
+            </button>
+            <button id="decline-request-btn" class="btn-secondary btn-sm">
+              Decline
+            </button>
+          </div>
+        </div>
+      `;
+      const acceptBtn = document.getElementById("accept-request-btn");
+      const declineBtn = document.getElementById("decline-request-btn");
+
+      if (acceptBtn) {
+        acceptBtn.addEventListener("click", () =>
+          handleAcceptRequest(data.user_id, data.friend_id)
+        );
+      }
+      if (declineBtn) {
+        declineBtn.addEventListener("click", () =>
+          handleDeclineFriendRequest(data.user_id, data.friend_id)
+        );
+      }
+      break;
+    
+    case "declined":
+      container.innerHTML = `
+        <div class="friendship-actions received-state">
+          <div class="status-badge declined">
+            Declined
+          </div>
+        </div>
+      `;
+      break;
+    case "none":
+    default:
+      container.innerHTML = `
+        <div class="friendship-actions none-state">
+          <button id="send-friend-request-btn" class="btn-primary">
+            Add Friend
+          </button>
+        </div>
+      `;
+
+      const addFriendBtn = document.getElementById("send-friend-request-btn");
+      if (addFriendBtn) {
+        addFriendBtn.addEventListener("click", () =>
+          handleSendFriendRequest(otherUserId)
+        );
+      }
+      break;
   }
 }
 
@@ -378,7 +537,6 @@ async function saveProfileChanges() {
 
     // Exit edit mode
     toggleEditMode();
-
   } catch (error) {
     console.error("Error saving profile:", error);
     showError("Failed to update profile. Please try again.");
@@ -409,6 +567,124 @@ function handleLogout() {
 }
 
 /**
+ * Handle sending friend request
+ * @private
+ */
+async function handleSendFriendRequest(friendId) {
+  const btn = document.getElementById("send-friend-request-btn");
+  const originalText = btn?.textContent;
+
+  try {
+    if (btn) {
+      btn.textContent = "Sending...";
+      btn.disabled = true;
+    }
+
+    await FriendService.sendFriendRequest(currentUser.userId, friendId);
+    showSuccess("Friend request sent!");
+
+    // Refresh friendship status
+    await loadAndCreateFriendshipActions(friendId);
+  } catch (error) {
+    console.error("Error sending friend request:", error);
+    showError("Failed to send friend request");
+
+    // Restore button
+    if (btn && originalText) {
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }
+  }
+}
+
+/**
+ * Handle unfriending a user
+ * @private
+ */
+async function handleUnfriend(friendId) {
+  const confirmed = confirm("Are you sure you want to remove this friend?");
+  if (!confirmed) return;
+
+  try {
+    await FriendService.removeFriend(currentUser.userId, friendId);
+    showSuccess("Friend removed");
+
+    // Refresh friendship status
+    await loadAndCreateFriendshipActions(friendId);
+
+    // Dispatch event for other components
+    document.dispatchEvent(new CustomEvent("friendshipChanged"));
+  } catch (error) {
+    console.error("Error removing friend:", error);
+    showError("Failed to remove friend");
+  }
+}
+
+/**
+ * Handle unfriending a user
+ * @private
+ */
+async function handleDeclineFriendRequest(senderId, receiverId) {
+  const confirmed = confirm(
+    "Are you sure you want to decline this friend request?"
+  );
+  if (!confirmed) return;
+
+  try {
+    await FriendService.declineFriendRequest(senderId, receiverId);
+    showSuccess("Friend request declined");
+
+    // Refresh friendship status
+    await loadAndCreateFriendshipActions(senderId);
+
+    // Dispatch event for other components
+    document.dispatchEvent(new CustomEvent("friendshipChanged"));
+  } catch (error) {
+    console.error("Error removing friend:", error);
+    showError("Failed to remove friend");
+  }
+}
+
+/**
+ * Handle accepting friend request
+ * @private
+ */
+async function handleAcceptRequest(requestId, otherUserId) {
+  try {
+    await FriendService.acceptFriendRequest(requestId, otherUserId)
+    showSuccess("Friend request accepted!");
+    
+    // Refresh friendship status
+    await loadAndCreateFriendshipActions(requestId);
+    
+    // Dispatch event for other components
+    document.dispatchEvent(new CustomEvent('friendRequestHandled'));
+    
+  } catch (error) {
+    console.error("Error accepting friend request:", error);
+    showError("Failed to accept friend request");
+  }
+}
+
+/**
+ * Handle canceling friend request
+ * @private
+ */
+async function handleCancelRequest(requestId, otherUserId) {
+  try {
+    await FriendService.removeFriend(requestId, otherUserId);
+    showSuccess("Friend request canceled");
+    
+    // Refresh friendship status
+    await loadAndCreateFriendshipActions(otherUserId);
+    
+  } catch (error) {
+    console.error("Error canceling friend request:", error);
+    showError("Failed to cancel friend request");
+  }
+}
+
+/**
  * Show change password modal (placeholder)
  * @private
  */
@@ -424,15 +700,6 @@ function showChangePasswordModal() {
 function showMessageModal() {
   // This would open a modal or navigate to a change password page
   showError("Might implement?");
-}
-
-/**
- * Show change password modal (placeholder)
- * @private
- */
-function handleSendFriendRequest() {
-  // This would open a modal or navigate to a change password page
-  showError("IMPLEMENT THIS!");
 }
 
 /**
