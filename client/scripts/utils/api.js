@@ -1,9 +1,11 @@
+import { config } from "../config/env.js";
+
 /**
  * API utilities and configuration
  * Handles authenticated requests and common API patterns
  */
 
-export const API_BASE_URL = "http://localhost:5001/api";
+export const API_BASE_URL = config.API_BASE_URL;
 
 /**
  * Authenticated fetch wrapper
@@ -24,6 +26,11 @@ export async function authFetch(url, options = {}) {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
+  // Add logging for dev mode
+  if (config.DEBUG) {
+    console.log(`${options.method || "GET"} ${url}`);
+  }
+
   try {
     const response = await fetch(url, {
       ...options,
@@ -34,21 +41,24 @@ export async function authFetch(url, options = {}) {
     if (response.status === 401 || response.status === 403) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      window.location.href = "sign_in.html";
+
+      if (!window.location.pathname.includes("sign_in.html")) {
+        window.location.href = "sign_in.html";
+      }
       throw new Error("Session expired. Please sign in again.");
     }
 
     // Handle other HTTP errors
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      const errorMessage = errorData.message || `HTTP ${response.status}: ${response.statusText}`;
+      const errorMessage =
+        errorData.message || `HTTP ${response.status}: ${response.statusText}`;
       throw new Error(errorMessage);
     }
 
     return response;
   } catch (error) {
     console.error("API request failed:", error);
-    window.location.href = "sign_in.html";
     throw error;
   }
 }
@@ -101,12 +111,12 @@ export async function apiDelete(url, data = null) {
   const options = {
     method: "DELETE",
   };
-  
+
   // Add body support for DELETE requests
   if (data) {
     options.body = JSON.stringify(data);
   }
-  
+
   const response = await authFetch(url, options);
   return await response.json();
 }

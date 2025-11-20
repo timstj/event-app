@@ -1,4 +1,4 @@
-import pool from "../config/db.js";
+import { pool } from "../config/db.js";
 
 const createEventTables = async () => {
   const eventTableQuery = `CREATE TABLE IF NOT EXISTS events (

@@ -1,4 +1,4 @@
-import pool from "../config/db.js";
+import { pool } from "../config/db.js";
 
 export const createEventService = async (
   title,
@@ -157,7 +157,7 @@ export const getAllEventsByHostService = async (userId) => {
     WHERE eh.user_id = $1
     ORDER BY e.date ASC
   `;
-  
+
   const result = await pool.query(query, [userId]);
   return result.rows;
 };

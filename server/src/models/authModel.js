@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import pool from "../config/db.js";
+import { pool } from "../config/db.js";
 import { slugify } from "../utils/slugify.js";
 
 export const getUserByEmailService = async (email) => {

@@ -9,6 +9,9 @@ pnpm-debug.log*
 .env
 .env.* 
 
+# Dont ignore example
+!.env.example
+
 # Logs
 logs/
 *.log

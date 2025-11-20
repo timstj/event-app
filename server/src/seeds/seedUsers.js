@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import pool from "../config/db.js";
+import { pool } from "../config/db.js";
 import { slugify } from "../utils/slugify.js";
 import bcrypt from "bcryptjs";
 

@@ -1,16 +1,23 @@
 {
-  "name": "server",
+  "name": "event-app-server",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/index.js",
+    "dev": "NODE_ENV=development nodemon src/index.js",
+    "start": "NODE_ENV=production node src/index.js",
+    "migrate": "node src/data/migrate.js",
+    "seed": "node src/seeds/seedUsers.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "Timothy Stjernfeldt",
+  "license": "MIT",
+  "description": "Backend API for Event App",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
