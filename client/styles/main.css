@@ -719,7 +719,7 @@ body {
   color: #4f8a8b;
   font-size: 3rem;
   font-weight: bold;
-  margin-bottom: 1rem;
+  margin: 1rem;
   text-align: center;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   letter-spacing: 1px;
@@ -743,13 +743,15 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  min-height: 100vh;
+  height: 100vh;
   padding: 2rem 1rem;
   background: linear-gradient(
     135deg,
     rgba(79, 138, 139, 0.1),
     rgba(247, 107, 138, 0.1)
   );
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .sign-in-container h2,
