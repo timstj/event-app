@@ -713,19 +713,31 @@ body {
   /* padding: 1rem 3rem 5rem; */
 }
 
-.sign-in-container {
+/* sign in container */
+
+.app-title {
+  color: #4f8a8b;
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
   text-align: center;
-  font-size: 1.3rem;
-}
-.sign-in-container input {
-  font-size: 1.3rem;
-}
-.sign-in-container button {
-  font-size: 1.3rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  letter-spacing: 1px;
 }
 
-/* Replace the existing .sign-up-container styles with these: */
+.auth-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(79, 138, 139, 0.2);
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
 
+.sign-in-container,
 .sign-up-container {
   display: flex;
   flex-direction: column;
@@ -740,30 +752,26 @@ body {
   );
 }
 
+.sign-in-container h2,
 .sign-up-container h2 {
   color: #333;
-  font-size: 2.5rem;
+  font-size: 2rem;
+  margin-top: 0;
   margin-bottom: 2rem;
   text-align: center;
   font-weight: bold;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
+.sign-in-container form,
 .sign-up-container form {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 16px;
-  padding: 2.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(79, 138, 139, 0.2);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   width: 100%;
-  max-width: 400px;
-  box-sizing: border-box;
 }
 
+.sign-in-container input,
 .sign-up-container input {
   padding: 14px 16px;
   border: 2px solid #4f8a8b;
@@ -774,6 +782,7 @@ body {
   color: #333;
 }
 
+.sign-in-container input:focus,
 .sign-up-container input:focus {
   outline: none;
   border-color: #2c5f60;
@@ -781,11 +790,13 @@ body {
   transform: translateY(-1px);
 }
 
+.sign-in-container input::placeholder,
 .sign-up-container input::placeholder {
   color: #888;
   font-weight: normal;
 }
 
+.sign-in-container button,
 .sign-up-container button {
   background: linear-gradient(135deg, #4f8a8b, #2c5f60);
   color: white;
@@ -800,13 +811,14 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-
+.sign-in-container button:hover:not(:disabled),
 .sign-up-container button:hover:not(:disabled) {
   background: linear-gradient(135deg, #2c5f60, #1a4344);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(79, 138, 139, 0.4);
 }
 
+.sign-in-container button:disabled,
 .sign-up-container button:disabled {
   background: #ccc;
   cursor: not-allowed;
@@ -814,16 +826,16 @@ body {
   box-shadow: none;
 }
 
+.sign-in-container button:active,
 .sign-up-container button:active {
   transform: translateY(0);
 }
 
-/* Add a link to sign in page */
 .auth-link {
   text-align: center;
   margin-top: 1.5rem;
   color: #666;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 
 .auth-link a {
@@ -838,33 +850,46 @@ body {
   text-decoration: underline;
 }
 
-/* Responsive design for sign-up */
 @media (max-width: 768px) {
+  .app-title {
+    font-size: 2.5rem;
+  }
+
+  .sign-in-container,
   .sign-up-container {
-    padding: 1rem 0.5rem;
+    padding: 1.5rem 1rem;
   }
 
-  .sign-up-container h2 {
-    font-size: 2rem;
-  }
-
-  .sign-up-container form {
+  .auth-card {
     padding: 2rem 1.5rem;
     max-width: 350px;
+  }
+
+  .sign-in-container h2,
+  .sign-up-container h2 {
+    font-size: 1.8rem;
   }
 }
 
 @media (max-width: 480px) {
-  .sign-up-container h2 {
-    font-size: 1.8rem;
+  .app-title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
   }
 
-  .sign-up-container form {
+  .auth-card {
     padding: 1.5rem 1rem;
     max-width: 300px;
   }
 
+  .sign-in-container h2,
+  .sign-up-container h2 {
+    font-size: 1.6rem;
+  }
+
+  .sign-in-container input,
   .sign-up-container input,
+  .sign-in-container button,
   .sign-up-container button {
     font-size: 0.95rem;
   }
@@ -1350,25 +1375,41 @@ body {
 }
 
 .status-badge.friends {
-  background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(40, 167, 69, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(40, 167, 69, 0.1),
+    rgba(40, 167, 69, 0.05)
+  );
   color: #28a745;
   border: 2px solid rgba(40, 167, 69, 0.3);
 }
 
 .status-badge.pending {
-  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 193, 7, 0.1),
+    rgba(255, 193, 7, 0.05)
+  );
   color: #d39e00;
   border: 2px solid rgba(255, 193, 7, 0.3);
 }
 
 .status-badge.received {
-  background: linear-gradient(135deg, rgba(23, 162, 184, 0.1), rgba(23, 162, 184, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(23, 162, 184, 0.1),
+    rgba(23, 162, 184, 0.05)
+  );
   color: #17a2b8;
   border: 2px solid rgba(23, 162, 184, 0.3);
 }
 
 .status-badge.declined {
-  background: linear-gradient(135deg, rgba(184, 23, 23, 0.1), rgba(184, 23, 23, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(184, 23, 23, 0.1),
+    rgba(184, 23, 23, 0.05)
+  );
   color: #b3211c;
   border: 2px solid rgba(184, 23, 23, 0.3);
 }
