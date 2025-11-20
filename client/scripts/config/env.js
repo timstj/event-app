@@ -17,7 +17,7 @@ function getEnvironmentConfig() {
 
     // If running in prod
     return {
-        API_BASE_URL: 'https://event-app-api.onrender.com/api', // Update to correct
+        API_BASE_URL: 'https://event-app-frontend-c3il.onrender.com', // Update to correct
         ENV: 'production',
         DEBUG: false
     };
