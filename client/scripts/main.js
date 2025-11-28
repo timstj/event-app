@@ -13,13 +13,7 @@ import { initProfilePage } from "./pages/profilePage.js";
 import { initRegisterPage } from "./auth/registrationHandler.js";
 import { initEventPage } from "./pages/eventPage.js";
 import { initInviteUsersPage } from "./pages/inviteUsersPage.js";
-import {
-  initNavigation,
-  updateNavigationForAuth,
-  setActiveNavigation,
-} from "./components/navigationBar.js";
-
-// Add this line with your other page initializations
+import { initNavigation } from "./components/navigationBar.js";
 
 /**
  * Pages that don't require authentication
@@ -34,9 +28,7 @@ function checkAuthentication() {
   const isPublicPage = PUBLIC_PAGES.some((page) => currentPage === page);
 
   if (!isPublicPage) {
-    const isAuthenticated = requireAuth();
-    updateNavigationForAuth(isAuthenticated);
-    return isAuthenticated;
+    return requireAuth();
   }
   return true;
 }
@@ -48,26 +40,32 @@ function initializePages() {
   const currentPage = window.location.pathname.split("/").pop() || "index.html";
   const isPublicPage = PUBLIC_PAGES.some((page) => currentPage === page);
 
-  if (!isPublicPage) {
-    // Init global navigation
-    initNavigation();
+  initNavigation();
 
-    // Set active navigation state
-    setActiveNavigation(currentPage);
-  }
   // Authentication pages
-  initLoginPage();
-  initRegisterPage();
+  if (currentPage === "sign_in.html") {
+    initLoginPage();
+  } else if (currentPage === "sign_up.html") {
+    initRegisterPage();
+  }
 
-  // Main application pages (only initialize if not public page)
+  // Main application pages (only initialize current page)
   if (!isPublicPage) {
-    initIndexPage();
-    initUsersPage();
-    initCreateEventPage();
-    initMyEventsPage();
-    initProfilePage();
-    initEventPage();
-    initInviteUsersPage();
+    if (currentPage === "index.html" || currentPage === "") {
+      initIndexPage();
+    } else if (currentPage === "users.html") {
+      initUsersPage();
+    } else if (currentPage === "create_event.html") {
+      initCreateEventPage();
+    } else if (currentPage === "my_events.html") {
+      initMyEventsPage();
+    } else if (currentPage === "profile.html") {
+      initProfilePage();
+    } else if (currentPage === "event.html") {
+      initEventPage();
+    } else if (currentPage === "invite_users.html") {
+      initInviteUsersPage();
+    }
   }
 }
 
@@ -77,12 +75,10 @@ function initializePages() {
 function setupGlobalErrorHandling() {
   window.addEventListener("error", (event) => {
     console.error("Global error:", event.error);
-    // Could send to error reporting service
   });
 
   window.addEventListener("unhandledrejection", (event) => {
     console.error("Unhandled promise rejection:", event.reason);
-    // Could send to error reporting service
   });
 }
 
@@ -90,10 +86,17 @@ function setupGlobalErrorHandling() {
  * Initialize the application
  */
 function initApp() {
-  checkAuthentication();
-  setupGlobalErrorHandling();
-  initializePages();
+  const isAuthenticated = checkAuthentication();
+  
+  if (isAuthenticated !== false) { 
+    setupGlobalErrorHandling();
+    initializePages();
+  }
 }
 
-// Start the application when DOM is ready
-document.addEventListener("DOMContentLoaded", initApp);
+// Start the app
+if (document.readyState === 'loading') {
+  document.addEventListener("DOMContentLoaded", initApp);
+} else {
+  initApp();
+}

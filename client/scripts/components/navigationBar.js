@@ -1,198 +1,372 @@
 /**
- * Navigation component
- * Handles global navigation functionality across all pages
+ * Modern Navigation Bar Component
+ * Responsive navigation with hamburger menu for mobile
  */
-import { getLoggedInUser, logout } from '../auth/authUtils.js';
-import { showSuccess } from './toast.js';
 
-/**
- * Initialize navigation for all pages
- */
-export function initNavigation() {
-  setupNavigationButtons();
-  updateProfileButton();
-}
+import { getLoggedInUser } from "../auth/authUtils.js";
+import { showSuccess } from "./toast.js";
 
-/**
- * Setup navigation button event listeners
- * @private
- */
-function setupNavigationButtons() {
-  // Create Event button
-  const createEventBtn = document.getElementById("create-event-button");
-  if (createEventBtn) {
-    createEventBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      navigateToPage("create_event.html");
-    });
+export class NavigationBar {
+  constructor() {
+    // Initialize state
+    this.currentUser = null;
+    this.navElement = null;
+    this.mobileMenuOpen = false;
   }
 
-  // My Events button
-  const myEventsBtn = document.getElementById("my-events-button");
-  if (myEventsBtn) {
-    myEventsBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      navigateToPage("my_events.html");
-    });
+  /**
+   * Initialize navigation bar
+   */
+  init() {
+    this.currentUser = getLoggedInUser();
+    this.render();
+    this.attachEventListeners();
+    this.handleResize();
   }
 
-  // Users button
-  const usersBtn = document.getElementById("users-button");
-  if (usersBtn) {
-    usersBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      navigateToPage("users.html");
-    });
+  /**
+   * Render navigation bar
+   */
+  render() {
+    // Remove existing nav if present
+    const existingNav = document.querySelector(".top-banner");
+    if (existingNav) {
+      existingNav.remove();
+    }
+
+    // Create navigation element
+    this.navElement = document.createElement("nav");
+    this.navElement.className = "top-banner";
+    this.navElement.innerHTML = this.getNavigationHTML();
+
+    // Insert at the top of body
+    document.body.insertBefore(this.navElement, document.body.firstChild);
   }
 
-  // Profile button
-  const profileBtn = document.getElementById("profile-button");
-  if (profileBtn) {
-    profileBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      navigateToProfile();
-    });
+  /**
+   * Get navigation HTML based on auth state
+   */
+  getNavigationHTML() {
+    const isAuthenticated = !!this.currentUser;
+
+    if (!isAuthenticated) {
+      return this.getGuestNavigation();
+    }
+
+    return this.getAuthenticatedNavigation();
   }
 
-  // Site title (home link)
-  const siteTitle = document.getElementById("site-title");
-  if (siteTitle) {
-    siteTitle.addEventListener("click", (e) => {
-      e.preventDefault();
-      navigateToPage("index.html");
-    });
-    siteTitle.style.cursor = "pointer";
+  /**
+   * Guest navigation (not logged in)
+   */
+  getGuestNavigation() {
+    return `
+      <div class="nav-container">
+        <div class="nav-brand">
+          <h1 id="site-title">Event Site</h1>
+        </div>
+        
+        <div class="nav-auth-buttons">
+          <a href="sign_in.html" class="nav-btn nav-btn-secondary">Sign In</a>
+          <a href="sign_up.html" class="nav-btn nav-btn-primary">Sign Up</a>
+        </div>
+      </div>
+    `;
   }
 
-  // Search functionality
-  setupGlobalSearch();
-}
+  /**
+   * Authenticated navigation (logged in)
+   */
+  getAuthenticatedNavigation() {
+    const initials = this.getUserInitials();
 
-/**
- * Navigate to a specific page
- * @private
- */
-function navigateToPage(page) {
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-  
-  if (currentPage === page) {
-    return; // Already on this page
+    return `
+      <div class="nav-container">
+        <!-- Mobile Hamburger Button -->
+        <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <!-- Brand/Logo -->
+        <div class="nav-brand">
+          <h1 id="site-title">Event Site</h1>
+        </div>
+
+        <!-- Navigation Links (Desktop) -->
+        <div class="nav-links" id="nav-links">
+          <a href="create_event.html" class="nav-link">
+            <span class="nav-icon">➕</span>
+            <span class="nav-text">Create Event</span>
+          </a>
+          <a href="my_events.html" class="nav-link">
+            <span class="nav-icon">📅</span>
+            <span class="nav-text">My Events</span>
+          </a>
+          <a href="users.html" class="nav-link">
+            <span class="nav-icon">👥</span>
+            <span class="nav-text">Users</span>
+          </a>
+        </div>
+
+        <!-- Right Side Actions -->
+        <div class="nav-actions">
+          <div class="nav-search">
+            <input 
+              type="text" 
+              id="search-bar" 
+              placeholder="Search events..." 
+              aria-label="Search events"
+            />
+          </div>
+          
+          <button
+            class="nav-profile-btn" 
+            id="profile-button"
+            title="${this.currentUser.first_name} ${this.currentUser.last_name}"
+            aria-label="View profile"
+          >
+            ${initials}
+          </button>
+
+          <button 
+            class="nav-btn nav-btn-logout" 
+            id="logout-button"
+            aria-label="Logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Overlay -->
+      <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-menu-content">
+          <div class="mobile-menu-header">
+            <div class="mobile-user-info">
+              <div class="mobile-profile-circle">${initials}</div>
+              <div class="mobile-user-details">
+                <strong>${this.currentUser.first_name} ${this.currentUser.last_name}</strong>
+                <span>${this.currentUser.email}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mobile-menu-links">
+            <a href="index.html" class="mobile-menu-link">
+              <span class="mobile-menu-icon">🏠</span>
+              <span>Home</span>
+            </a>
+            <a href="create_event.html" class="mobile-menu-link">
+              <span class="mobile-menu-icon">➕</span>
+              <span>Create Event</span>
+            </a>
+            <a href="my_events.html" class="mobile-menu-link">
+              <span class="mobile-menu-icon">📅</span>
+              <span>My Events</span>
+            </a>
+            <a href="users.html" class="mobile-menu-link">
+              <span class="mobile-menu-icon">👥</span>
+              <span>Users</span>
+            </a>
+            <a href="profile.html?slug=${this.currentUser.slug}" class="mobile-menu-link">
+              <span class="mobile-menu-icon">👤</span>
+              <span>Profile</span>
+            </a>
+          </div>
+
+          <div class="mobile-menu-footer">
+            <button class="mobile-logout-btn" id="mobile-logout-button">
+              <span class="mobile-menu-icon">🚪</span>
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
-  window.location.href = page;
-}
+  /**
+   * Get user initials for profile button
+   */
+  getUserInitials() {
+    if (!this.currentUser) return "?";
 
-/**
- * Navigate to profile page
- * @private
- */
-function navigateToProfile() {
-  const currentUser = getLoggedInUser();
-  
-  if (currentUser && currentUser.slug) {
-    navigateToPage(`profile.html?slug=${currentUser.slug}`);
-  } else {
-    navigateToPage("profile.html");
-  }
-}
+    const firstName = this.currentUser.first_name || "";
+    const lastName = this.currentUser.last_name || "";
 
-/**
- * Update profile button with user info
- * @private
- */
-function updateProfileButton() {
-  const profileBtn = document.getElementById("profile-button");
-  const currentUser = getLoggedInUser();
-  
-  if (profileBtn && currentUser) {
-    const initial = getUserInitial(currentUser);
-    profileBtn.textContent = initial;
-    profileBtn.title = `Profile (${currentUser.email})`;
-    profileBtn.classList.add('profile-btn-active');
+    return (firstName.charAt(0) + lastName.charAt(0)).toUpperCase() || "U";
   }
-}
 
-/**
- * Get user initial for profile button
- * @private
- */
-function getUserInitial(user) {
-  if (user.first_name && user.last_name) {
-    const firstInitial = user.first_name.charAt(0).toUpperCase();
-    const lastInitial = user.last_name.charAt(0).toUpperCase();
-    return firstInitial + lastInitial;
-  }
-  if (user.email) {
-    return user.email.charAt(0).toUpperCase();
-  }
-  // Final fallback
-  return 'U';
-}
+  /**
+   * Attach event listeners
+   */
+  attachEventListeners() {
+    // Site title (home link)
+    const siteTitle = document.getElementById("site-title");
+    if (siteTitle) {
+      siteTitle.addEventListener("click", () => {
+        window.location.href = "index.html";
+      });
+    }
 
-/**
- * Setup global search functionality
- * @private
- */
-function setupGlobalSearch() {
-  const searchBar = document.getElementById("search-bar");
-  
-  if (searchBar) {
-    searchBar.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        const searchTerm = searchBar.value.trim();
-        if (searchTerm) {
-          handleGlobalSearch(searchTerm);
+    // Profile button
+    const profileBtn = document.getElementById("profile-button");
+    if (profileBtn) {
+      profileBtn.addEventListener("click", () => {
+        const userSlug = this.currentUser?.slug;
+        if (userSlug) {
+          window.location.href = `profile.html?slug=${userSlug}`;
         }
-      }
-    });
-  }
-}
+      });
+    }
 
-/**
- * Handle global search
- * @private
- */
-function handleGlobalSearch(searchTerm) {
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-  
-  if (currentPage === 'index.html') {
-    // Trigger local search on homepage
-    const event = new CustomEvent('globalSearch', { 
-      detail: { searchTerm } 
+    // Logout buttons (desktop and mobile)
+    const logoutBtn = document.getElementById("logout-button");
+    const mobileLogoutBtn = document.getElementById("mobile-logout-button");
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => this.handleLogout());
+    }
+
+    if (mobileLogoutBtn) {
+      mobileLogoutBtn.addEventListener("click", () => {
+        this.closeMobileMenu();
+        this.handleLogout();
+      });
+    }
+
+    // Hamburger menu
+    const hamburger = document.getElementById("hamburger-btn");
+    if (hamburger) {
+      hamburger.addEventListener("click", () => this.toggleMobileMenu());
+    }
+
+    // Close mobile menu when clicking overlay
+    const mobileMenu = document.getElementById("mobile-menu");
+    if (mobileMenu) {
+      mobileMenu.addEventListener("click", (e) => {
+        if (e.target === mobileMenu) {
+          this.closeMobileMenu();
+        }
+      });
+    }
+
+    // Close mobile menu on navigation
+    const mobileLinks = document.querySelectorAll(".mobile-menu-link");
+    mobileLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        this.closeMobileMenu();
+      });
+    });
+
+    // Search functionality
+    this.setupSearch();
+
+    // Handle window resize
+    window.addEventListener("resize", () => this.handleResize());
+  }
+
+  /**
+   * Setup search functionality
+   */
+  setupSearch() {
+    const searchBar = document.getElementById("search-bar");
+    if (searchBar) {
+      searchBar.addEventListener("input", (e) => {
+        const searchTerm = e.target.value.trim();
+        this.handleSearch(searchTerm);
+      });
+    }
+  }
+
+  /**
+   * Handle search
+   */
+  handleSearch(searchTerm) {
+    // Dispatch custom event that the page can listen to
+    const event = new CustomEvent("navbarSearch", {
+      detail: { searchTerm },
     });
     document.dispatchEvent(event);
-  } else {
-    // Navigate to search results
-    window.location.href = `index.html?search=${encodeURIComponent(searchTerm)}`;
+  }
+
+  /**
+   * Toggle mobile menu
+   */
+  toggleMobileMenu() {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+
+    const hamburger = document.getElementById("hamburger-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    if (this.mobileMenuOpen) {
+      hamburger?.classList.add("active");
+      mobileMenu?.classList.add("active");
+      document.body.style.overflow = "hidden";
+    } else {
+      this.closeMobileMenu();
+    }
+  }
+
+  /**
+   * Close mobile menu
+   */
+  closeMobileMenu() {
+    this.mobileMenuOpen = false;
+
+    const hamburger = document.getElementById("hamburger-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    hamburger?.classList.remove("active");
+    mobileMenu?.classList.remove("active");
+    document.body.style.overflow = "";
+  }
+
+  /**
+   * Handle window resize
+   */
+  handleResize() {
+    if (window.innerWidth > 768 && this.mobileMenuOpen) {
+      this.closeMobileMenu();
+    }
+  }
+
+  /**
+   * Handle logout
+   */
+  handleLogout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    showSuccess("Logged out successfully");
+
+    setTimeout(() => {
+      window.location.href = "sign_in.html";
+    }, 1000);
+  }
+
+  /**
+   * Update navigation
+   */
+  update() {
+    this.currentUser = getLoggedInUser();
+    this.render();
+    this.attachEventListeners();
   }
 }
 
-/**
- * Update active navigation state
- */
-export function setActiveNavigation(activePage) {
-  document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.classList.remove('nav-active');
-  });
+// Create singleton instance
+const navigationBar = new NavigationBar();
 
-  const activeBtn = document.querySelector(`[data-page="${activePage}"]`);
-  if (activeBtn) {
-    activeBtn.classList.add('nav-active');
-  }
+// Export
+export default navigationBar;
+
+export function initNavigation() {
+  navigationBar.init();
 }
 
-/**
- * Show/hide navigation based on auth state
- */
-export function updateNavigationForAuth(isAuthenticated) {
-  const navButtons = document.querySelectorAll('.nav-btn');
-  const searchBar = document.getElementById('search-bar');
-  
-  navButtons.forEach(btn => {
-    btn.style.display = isAuthenticated ? 'block' : 'none';
-  });
-  
-  if (searchBar) {
-    searchBar.style.display = isAuthenticated ? 'block' : 'none';
-  }
+export function updateNavigation() {
+  navigationBar.update();
 }
